@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Vue Recording Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+	[v-cloak] {display:none}
+  </style>
+</head>  
+<body>
+	<div id="app" v-cloak>
+		<button @click="playSound" :disabled="isPlaying">Play</button>
+		<button @click="stop" :disabled="!isPlaying">Stop</button>		
+	</div>
+  	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/pizzicato/0.6.1/Pizzicato.min.js"></script>
+  	<script type="text/javascript" src="./recorder.js"></script>
+  	<script type="text/javascript" src="./FileSaver.js"></script>  	
+	<script src="main.js"></script>
+</html>

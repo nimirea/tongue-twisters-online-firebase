@@ -4,7 +4,8 @@ var app = new Vue({
     stream: {},
     snd: {},
     recorder: {},
-    isPlaying: false
+    isPlaying: false,
+    stimulus: "stimulus word"
   },
   created: function(){
   	navigator.mediaDevices.getUserMedia({audio:true, video:false})
@@ -13,32 +14,47 @@ var app = new Vue({
 	})
   },
   methods : {
-  	playSound: function(){         	
-		this.snd = new Pizzicato.Sound(
-			{
-				source:'file', 
-				options: {
-					path: './metronome.wav',
-					loop: true
-				}
-			},
-			() => this.snd.play()
-		);
-		this.isPlaying = true;
-		this.record();
+  	playSound: function(){
+      // import metronome sound as an object
+  		this.snd = new Pizzicato.Sound(
+  			{
+  				source:'file',
+  				options: {
+  					path: './metronome.wav',
+  					loop: true
+  				}
+  			},
+
+        // play metronome sound
+  			() => this.snd.play()
+  		);
+
+      // update view to reflect that sound is playing
+  		this.isPlaying = true;
+
+      // start recording
+  		this.record();
   	},
   	record: function(){
-		var AudioContext = window.AudioContext || window.webkitAudioContext;
-		var audio_context = new AudioContext();
-		var input = audio_context.createMediaStreamSource(this.stream);
-		this.recorder = new Recorder(input, {numChannels:1});
-		this.recorder.record();
+  		var AudioContext = window.AudioContext || window.webkitAudioContext;
+  		var audio_context = new AudioContext();
+  		var input = audio_context.createMediaStreamSource(this.stream);
+  		this.recorder = new Recorder(input, {numChannels:1});
+  		this.recorder.record();
   	},
   	stop: function(){
+
+      // stop playing the sound
 	  	this.snd.stop();
-		this.recorder.stop();
-		this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
-		this.isPlaying = false;
+
+      // stop the recorder
+  		this.recorder.stop();
+
+      // export to WAV file (locally; prompt for location)
+  		this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
+
+      // update view as a result of this variable
+  		this.isPlaying = false;
   	}
   }
 

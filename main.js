@@ -5,13 +5,22 @@ var app = new Vue({
     snd: {},
     recorder: {},
     isPlaying: false,
-    stimulus: "stimulus word"
+    stimList: [{'twister': ''}],
+    currentStim: 0
   },
   created: function(){
+    // get stimuli from CSV file
+    fetch('./stimuli.csv')
+      .then(response => response.text())
+      .then(data => {this.stimList = Papa.parse(data, {
+        'header': true
+      }).data});
+
+    // hook up microphone
   	navigator.mediaDevices.getUserMedia({audio:true, video:false})
-	.then((stream) => {
-		this.stream = stream;
-	})
+  	.then((stream) => {
+  		this.stream = stream;
+  	})
   },
   methods : {
   	playSound: function(){
@@ -51,10 +60,13 @@ var app = new Vue({
   		this.recorder.stop();
 
       // export to WAV file (locally; prompt for location)
-  		this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
+  		// this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
 
       // update view as a result of this variable
   		this.isPlaying = false;
+
+      // go to next twister
+      this.currentStim += 1;
   	}
   }
 

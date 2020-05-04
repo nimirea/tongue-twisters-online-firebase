@@ -9,14 +9,19 @@
   </style>
 </head>
 <body>
-	<div id="app" v-cloak>
-    <p>{{ stimulus }}</p>
-		<button @click="playSound" :disabled="isPlaying">Play</button>
-		<button @click="stop" :disabled="!isPlaying">Stop</button>
-	</div>
-  	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/pizzicato/0.6.1/Pizzicato.min.js"></script>
-  	<script type="text/javascript" src="./recorder.js"></script>
-  	<script type="text/javascript" src="./FileSaver.js"></script>
-	<script src="main.js"></script>
+
+<div id="app" v-cloak>
+  <p>{{ stimList[currentStim]['twister'] }}</p>
+	<button v-on:click="playSound" :disabled="isPlaying">Play</button>
+	<button v-on:click="stop" :disabled="!isPlaying">Stop</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pizzicato/0.6.1/Pizzicato.min.js"></script>
+<script type="text/javascript" src="./papaparse.js"></script>
+<script type="text/javascript" src="./recorder.js"></script>
+<script type="text/javascript" src="./FileSaver.js"></script>
+<script src="main.js"></script>
+
+</body>
 </html>

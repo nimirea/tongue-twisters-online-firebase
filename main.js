@@ -18,19 +18,19 @@ var app = new Vue({
 
     // hook up microphone
   	navigator.mediaDevices.getUserMedia({audio:true, video:false})
-  	.then((stream) => {
-  		this.stream = stream;
-  	})
+    	.then((stream) => {
+    		this.stream = stream;
+    	})
   },
   methods : {
   	playSound: function(){
-      // import metronome sound as an object
+      // import metronome sound (4 slow + 12 fast beats) as an object
   		this.snd = new Pizzicato.Sound(
   			{
   				source:'file',
   				options: {
-  					path: './metronome.wav',
-  					loop: true
+  					path: './metronome.mp3',
+  					loop: false
   				}
   			},
 

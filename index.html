@@ -21,14 +21,16 @@
   </div>
 
   <!-- DDK task -->
-  <div v-if="consentGiven & !expOver & taskList[currentTask] == 'DDK'">
+  <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'DDK'">
     <div v-if="!isStarted">
-      <h1>Instructions (Task {{currentTask + 1}} of {{taskList.length}})</h1>
+      <h1>Instructions (task {{currentTask + 1}} of {{taskList.length}})</h1>
       <p>
-        For the first task, we will ask you to repeat a sequence of syllables as quickly as
-        possible, without slurring them together. Please say "puh tuh kuh" 6
-        times as quickly and as accurately as possible, as in the following
-        example.
+        For the first task, we will ask you to repeat a sequence of syllables as
+        quickly as possible, without slurring them together.
+      </p>
+      <p>
+        Please say "puh tuh kuh" 6 times as quickly and as accurately as
+        possible, as in the following example.
       </p>
       <button v-on:click="sampleTrial">play example</button>
       <p>
@@ -42,21 +44,31 @@
   </div>
 
   <!-- main experiment flow (tongue-twisters) -->
-  <div v-if="consentGiven & !expOver & taskList[currentTask] == 'TT'">
+  <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'TT'">
     <div v-if="!isStarted">
-      <h1>Instructions (Task {{currentTask + 1}} of {{taskList.length}})</h1>
-      <p>We will now ask you to read some tongue-twisters to the beat of a metronome.
-          You will see a single tongue-twister appear on the screen, and, after one second, the metronome will begin at a slow pace.
-          After one repetition, the metronome will speed up for the next 3 repetitions.
-          Click the button below to hear an example trial for the tongue-twister "".
+      <h1>Instructions (task {{currentTask + 1}} of {{taskList.length}})</h1>
+      <p>
+        We will now ask you to read some tongue-twisters to the beat of a
+        metronome. You will see a single tongue-twister appear on the screen,
+        and, after one second, the metronome will begin at a slow pace. After
+        one repetition, the metronome will speed up for the next 3 repetitions.
+        Click the button below to hear an example trial for the tongue-twister
+        "".
       </p>
       <button v-on:click="sampleTrial">play example</button>
-      <p>Please do your best to keep up with the metronome!
-        If you make a mistake, please do not go try to back and correct yourself.
+      <p>
+        Please do your best to keep up with the metronome! If you make a
+        mistake, please do <emp>not</emp> go try to back and correct yourself.
       </p>
-      <p>We highly recommend performing this task with headphones on, in a quiet environment.
-        You can replay the example trial above and adjust your volume to make sure you can comfortably hear the metronome.</p>
-      <p>This experiment should last approximately {{ stimList.length * .25 }} minutes.</p>
+      <p>
+        We highly recommend performing this task with headphones on, in a quiet
+        environment. You can replay the example trial above and adjust your
+        volume to make sure you can comfortably hear the metronome.
+      </p>
+      <p>
+        This experiment should last approximately {{ stimList.length * .25 }}
+        minutes.
+      </p>
       <button v-on:click="startTask">start experiment</button>
     </div>
 

@@ -14,7 +14,16 @@ var app = new Vue({
     rejected: false, // declined to participate
     trialEnded: false, // TT task
     expOver: false,
-    taskList: ['DDK', 'TT'], // list of tasks, in order of appearance
+    taskList: [ // tasks, in order
+      {
+        name: 'DDK',
+        sample_path: './samples/pataka_online.m4a'
+      },
+      {
+        name: 'TT',
+        sample_path: './samples/TT.mp3'
+      }
+    ], // task info, in order of appearance
     currentTask: 0, // keeps track of which task is active
     recordingDDK: false // whether DDK task is recording
   },
@@ -35,12 +44,12 @@ var app = new Vue({
       		this.stream = stream;
 
           // task-specific logic here
-          if (this.taskList[this.currentTask] == 'TT') {
+          if (this.taskList[this.currentTask].name == 'TT') {
             // update view to reflect that sound is playing
         		this.isStarted = true;
             // run first trial
             this.runTrial();
-          } else if (this.taskList[this.currentTask] == 'DDK') {
+          } else if (this.taskList[this.currentTask].name == 'DDK') {
             // start recording
             this.record();
 
@@ -139,11 +148,26 @@ var app = new Vue({
       // export to WAV file (locally; prompt for location)
       // this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
 
+      this.recorder.clear();
+
     },
 
-    // TODO play sample trial
+    // play sample trial
     sampleTrial: function() {
+      var sampleSound = new Pizzicato.Sound(
+  			{
+  				source:'file',
+  				options: {
+  					path: this.taskList[this.currentTask].sample_path,
+  					loop: false
+  				}
+  			},
 
+        // when sound is loaded, just play it
+  			() => {
+          sampleSound.play();
+        }
+  		);
     },
 
     endExp: function() {

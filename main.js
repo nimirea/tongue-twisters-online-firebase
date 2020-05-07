@@ -7,15 +7,16 @@ var app = new Vue({
     snd: {},
     recorder: {},
     isStarted: false,
-    stimList: [{'twister': ''}],
+    stimList: [{'twister': ''}], // list of stimuli for TT task
     currentStim: 0,
     isi: 1000, // interstimulus interval, in ms
     consentGiven: false,
-    rejected: false,
-    trialEnded: false,
+    rejected: false, // declined to participate
+    trialEnded: false, // TT task
     expOver: false,
-    taskOrder: ['DDK', 'TT'],
-    currentTask: 0
+    taskList: ['DDK', 'TT'], // list of tasks, in order of appearance
+    currentTask: 0, // keeps track of which task is active
+    recordingDDK: false // whether DDK task is recording
   },
   created: function(){
     // get stimuli from CSV file
@@ -27,23 +28,44 @@ var app = new Vue({
   },
   methods : {
     // function that starts the experiment
-    startExp: function(){
+    startTask: function(){
       // get microphone permissions before anything else
       navigator.mediaDevices.getUserMedia({audio:true, video:false})
       	.then((stream) => {
       		this.stream = stream;
 
-          // update view to reflect that sound is playing
-      		this.isStarted = true;
+          // task-specific logic here
+          if (this.taskList[this.currentTask] == 'TT') {
+            // update view to reflect that sound is playing
+        		this.isStarted = true;
+            // run first trial
+            this.runTrial();
+          } else if (this.taskList[this.currentTask] == 'DDK') {
+            // start recording
+            this.record();
 
-          // run first trial
-          this.runTrial();
+            // for DDK task we just need to record and then stop
+            this.recordingDDK = true;
+          }
 
-      	}).catch((err) => {
-          alert("In order to continue the experiment, you must allow this page to record audio using your microphone.")
-        })
+        	}).catch((err) => {
+            alert("In order to continue the experiment, you must allow this page to record audio using your microphone.")
+          })
 
 
+    },
+
+    stopTask: function() {
+      // stop recording
+      this.stopRecording();
+
+      // advance to next task
+      this.currentTask += 1;
+
+      // end the whole experiment if we're all out of tasks
+      if (this.currentTask == this.taskList.length) {
+        this.endExp();
+      }
     },
 
     // function that advances to next trial
@@ -74,17 +96,15 @@ var app = new Vue({
   			() => {
           // set what to do after the sound ends
           this.snd.on("end", () => setTimeout(() => {
-            this.recorder.stop();
-            // TODO upload recording here
-            // export to WAV file (locally; prompt for location)
-            // this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
+            this.stopRecording();
 
             // go to next item, if it exists
             if (this.currentStim < this.stimList.length - 2) {
+
               // show continue button
               this.trialEnded = true;
             } else {
-              this.endExp();
+              this.stopTask();
             }
           }, this.isi));
 
@@ -106,7 +126,20 @@ var app = new Vue({
   		var input = audio_context.createMediaStreamSource(this.stream);
   		this.recorder = new Recorder(input, {numChannels:1});
   		this.recorder.record();
+      console.log("Recorder started")
   	},
+
+    // stop recording and upload
+    stopRecording: function() {
+      // TODO check if recorder is actually playing.
+      console.log("Recorder stopped")
+      this.recorder.stop();
+
+      // TODO upload recording here
+      // export to WAV file (locally; prompt for location)
+      // this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
+
+    },
 
     // TODO play sample trial
     sampleTrial: function() {

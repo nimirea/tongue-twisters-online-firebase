@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Vue Recording Test</title>
+  <title>Tongue-Twister Experiment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
 	[v-cloak] {display:none}
@@ -11,9 +11,43 @@
 <body>
 
 <div id="app" v-cloak>
-  <p>{{ stimList[currentStim]['twister'] }}</p>
-	<button v-on:click="playSound" :disabled="isPlaying">Play</button>
-	<button v-on:click="stop" :disabled="!isPlaying">Stop</button>
+  <!-- consent form -->
+  <div v-if="!consentGiven">
+    <h1>Consent Form</h1>
+    <p>Text of consent form here</p>
+    <button v-on:click="consentGiven = true">I agree! Take me to the experiment</button>
+    <button v-on:click="rejected = true;">I do not consent</button>
+    <p v-if="rejected">Thanks for checking out our experiment! You may close this window now.</p>
+  </div>
+
+  <!-- main experiment flow (tongue-twisters) -->
+  <div v-if="consentGiven & !expOver & taskList[currentTask] == 'TT';">
+    <div v-if="!isStarted">
+      <h1>Instructions (Task {{currentTask + 1}} of {{taskList.length}})</h1>
+      <p>In this experiment, you will be asked to read some tongue-twisters to the beat of a metronome.
+          You will see a tongue-twister appear on the screen, and, after one second, the metronome will begin at a slow pace.
+          After one repetition, the metronome will speed up for the next 3 repetitions. Click the button below to see an example trial.
+      </p>
+      <button v-on:click="sampleTrial">example trial</button>
+      <p>Please do your best to keep up with the metronome!
+        If you make a mistake, please do not go try to back and correct yourself.
+      </p>
+      <p>We highly recommend performing this task with headphones on, in a quiet environment.
+        You can replay the example trial above and adjust your volume to make sure you can comfortably hear the metronome.</p>
+      <p>This experiment should last approximately {{ stimList.length * .25 }} minutes.</p>
+      <button v-on:click="startExp">start experiment</button>
+    </div>
+
+    <div v-if="isStarted">
+      <p>{{ stimList[currentStim]['twister'] }}</p>
+      <button v-on:click="nextTrial" v-if="trialEnded">next</button>
+    </div>
+  </div>
+
+  <!-- experiment over -->
+  <div v-if="expOver">
+    <p>Thank you for taking part in our experiment! Your completion code is XXXXXXXX.</p>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

@@ -1,4 +1,23 @@
-// config variables
+// Knuth shuffle (in-place)
+// from: https://stackoverflow.com/a/2450976
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
 
 var app = new Vue({
   el: '#app',
@@ -6,9 +25,9 @@ var app = new Vue({
     stream: {},
     snd: {},
     recorder: {},
-    isStarted: false,
+    isStarted: false, // has the experiment started?
     stimList: [{'twister': ''}], // list of stimuli for TT task
-    currentStim: 0,
+    currentStim: 0, // keep track of which stimulus should be shown
     isi: 1000, // interstimulus interval, in ms
     consentGiven: false,
     rejected: false, // declined to participate
@@ -31,9 +50,16 @@ var app = new Vue({
     // get stimuli from CSV file
     fetch('./stimuli.csv')
       .then(response => response.text())
-      .then(data => {this.stimList = Papa.parse(data, {
-        'header': true
-      }).data});
+      .then(data => {
+        this.stimList = Papa.parse(data, {
+            'header': true
+        }).data;
+
+        // randomize stimulus list
+        shuffle(this.stimList);
+
+        // TODO write stimulus list to file on server
+      });
   },
   methods : {
     // function that starts the experiment

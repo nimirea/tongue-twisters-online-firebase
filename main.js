@@ -47,6 +47,8 @@ var app = new Vue({
     recordingDDK: false // whether DDK task is recording
   },
   created: function(){
+    // TODO assign unique participant ID
+
     // get stimuli from CSV file
     fetch('./stimuli.csv')
       .then(response => response.text())
@@ -166,12 +168,10 @@ var app = new Vue({
 
     // stop recording and upload
     stopRecording: function() {
-      // TODO check if recorder is actually playing.
-      console.log("Recorder stopped")
       this.recorder.stop();
 
       // TODO upload recording here
-      // export to WAV file (locally; prompt for location)
+      // current code saves locally, prompting client for location
       // this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
 
       this.recorder.clear();

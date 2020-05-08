@@ -73,6 +73,10 @@ var app = new Vue({
   methods : {
 		//get timestamp of consent
 		storeConsent: function(){
+      // update view
+      this.consentGiven = true;
+
+      // upload timestamp
 			var db = firebase.database();
 			db.ref(this.participant_id + "/consent").set(firebase.database.ServerValue.TIMESTAMP);
 		},
@@ -182,13 +186,15 @@ var app = new Vue({
     stopRecording: function() {
       this.recorder.stop();
       this.isRecording = false;
+      // compute filename here
+      var filename = this.taskList[this.currentTask].name + "-" + this.currentStim
 
       // upload recording here
 			this.recorder.exportWAV((blob) => {
 				var storage = firebase.storage();
 
 				//this line pushes the wave file (blob) up to Firebase
-				storage.ref().child(this.participant_id + "/" + this.currentTask + "-" + this.currentStim + ".wav").put(blob);
+				storage.ref().child(this.participant_id + "/" + filename + ".wav").put(blob);
 			});
 
       this.recorder.clear();

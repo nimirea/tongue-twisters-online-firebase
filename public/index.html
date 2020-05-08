@@ -36,7 +36,7 @@
     Donec blandit libero eu libero tristique tempor. Quisque eu leo volutpat, bibendum lorem eu, molestie ligula. Donec non diam ante. Integer vel nisl et augue eleifend blandit in sit amet nisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi maximus purus at sapien commodo dictum. Etiam in ex tincidunt, viverra mauris quis, eleifend tortor. Aenean a posuere dolor.
     </p>
     <div class = "buttonbox">
-      <button v-on:click="consentGiven = true;" class="green">I agree! Take me to the experiment</button>
+      <button v-on:click="storeConsent" class="green">I agree! Take me to the experiment</button>
       <button v-on:click="rejected = true;" class="red">I do not consent</button>
     </div>
     <p v-if="rejected">Thanks for checking out our experiment. You may close this window now.</p>

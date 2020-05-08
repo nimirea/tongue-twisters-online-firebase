@@ -7,38 +7,61 @@
   <style>
 	[v-cloak] {display:none}
   </style>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:ital,wght@0,400;0,700;1,400;1,700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link href="./style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
 <div id="app" v-cloak>
+  <p class="recording-bar" v-if="isRecording">recording now</p>
+
   <!-- consent form -->
   <div v-if="!consentGiven">
     <h1>Consent Form</h1>
-    <p>Text of consent form here</p>
-    <button v-on:click="consentGiven = true;">I agree! Take me to the experiment</button>
-    <button v-on:click="rejected = true;">I do not consent</button>
+    <p>Text of consent form will go here. This is just a placeholder.</p>
+    <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In in tellus sem. Vivamus elementum porta ligula non tincidunt. Praesent pharetra sit amet orci in bibendum. Suspendisse pharetra eros at risus porttitor, id egestas neque tincidunt. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Cras fermentum diam eget ante suscipit, vel dictum dolor bibendum. Duis id egestas erat. Integer vehicula venenatis ipsum, eu condimentum metus viverra sed. Sed consequat dui ut sollicitudin ullamcorper. Vestibulum non velit tempus enim mattis suscipit. Maecenas velit elit, commodo a malesuada vitae, suscipit consequat massa.
+    </p>
+    <p>
+    Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut ac nisl accumsan lorem vulputate feugiat. Integer ante urna, blandit ut tortor at, porttitor vulputate massa. Donec eu elit metus. Donec vitae orci mollis, dapibus urna vel, eleifend nibh. Vivamus a nulla eu tellus egestas efficitur a vestibulum felis. Fusce fermentum tortor eget ex dapibus dignissim. Vestibulum elit ante, feugiat et bibendum non, sollicitudin ac turpis. Duis tristique tempus ex eu imperdiet. Duis vel neque risus. Nulla ultrices dictum nunc, et cursus nisl eleifend congue. Ut pharetra est velit, eget ultrices erat varius a. Nullam luctus vehicula ipsum, eu auctor lacus molestie eget.
+    </p>
+    <p>
+    Maecenas auctor, velit sit amet dignissim blandit, lacus mi ultricies metus, sed condimentum sem enim in massa. Maecenas ut metus eget odio auctor venenatis sed nec magna. Donec id lacus eu urna condimentum auctor non ut massa. Quisque nisl urna, molestie sit amet tincidunt ut, imperdiet eu neque. Nunc sed dignissim metus, sit amet porta eros. Quisque elementum nibh in lacus pellentesque imperdiet. Morbi nec leo vitae orci lacinia pharetra volutpat sit amet risus. Proin libero justo, mollis sed ultrices at, mollis sed nunc. Etiam vehicula, nisi eu blandit maximus, dolor augue pharetra ipsum, viverra auctor metus libero sit amet dolor.
+    </p>
+    <p>
+    Morbi sollicitudin, ipsum ut tincidunt interdum, leo odio elementum felis, dignissim tempor ligula felis vel arcu. Nullam maximus metus elit, vel feugiat diam efficitur vel. Morbi scelerisque eget elit id viverra. Pellentesque euismod rhoncus justo vitae aliquam. Vivamus sagittis dolor sit amet erat aliquet, vitae efficitur justo viverra. Sed at lectus augue. Sed egestas suscipit tellus at ultrices. Phasellus tincidunt mi velit, et condimentum velit condimentum eget. Donec aliquet nulla quis leo aliquam finibus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum facilisis pretium dolor, vel tincidunt ipsum congue a.
+    </p>
+    <p>
+    Donec blandit libero eu libero tristique tempor. Quisque eu leo volutpat, bibendum lorem eu, molestie ligula. Donec non diam ante. Integer vel nisl et augue eleifend blandit in sit amet nisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi maximus purus at sapien commodo dictum. Etiam in ex tincidunt, viverra mauris quis, eleifend tortor. Aenean a posuere dolor.
+    </p>
+    <div class = "buttonbox">
+      <button v-on:click="consentGiven = true;" class="green">I agree! Take me to the experiment</button>
+      <button v-on:click="rejected = true;" class="red">I do not consent</button>
+    </div>
     <p v-if="rejected">Thanks for checking out our experiment! You may close this window now.</p>
   </div>
 
   <!-- DDK task -->
   <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'DDK'">
     <div v-if="!isStarted">
-      <h1>Instructions (task {{currentTask + 1}} of {{taskList.length}})</h1>
+      <h1>Task {{currentTask + 1}} of {{taskList.length}}</h1>
       <p>
-        For the first task, we will ask you to repeat a sequence of syllables as
+        In this task, we will ask you to repeat a sequence of syllables as
         quickly as possible, without slurring them together.
       </p>
       <p>
         Please say "puh tuh kuh" 6 times as quickly and as accurately as
         possible, as in the following example.
       </p>
-      <button v-on:click="sampleTrial">play example</button>
+      <button v-on:click="sampleTrial">&#9658; play example</button>
       <p>
         Once you've listened to this example, please practice once before
         recording yourself.
       </p>
-      <button v-on:click="startTask" v-if="!recordingDDK">start recording</button>
-      <button v-on:click="stopTask" v-if="recordingDDK">stop recording</button>
+      <p>When recording is on, you will see a <span class="red">red</span> bar at the top of the screen.</p>
+      <button v-on:click="startTask" v-if="!recordingDDK"><span class="rec-symbols">&#x25cf;</span> start recording</button>
+      <button v-on:click="stopTask" v-if="recordingDDK"><span class="rec-symbols">&#9632;</span> stop recording</button>
 
     </div>
   </div>
@@ -46,34 +69,34 @@
   <!-- main experiment flow (tongue-twisters) -->
   <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'TT'">
     <div v-if="!isStarted">
-      <h1>Instructions (task {{currentTask + 1}} of {{taskList.length}})</h1>
+      <h1>Task {{currentTask + 1}} of {{taskList.length}}</h1>
       <p>
         We will now ask you to read some tongue-twisters to the beat of a
         metronome. You will see a single tongue-twister appear on the screen,
-        and, after one second, the metronome will begin at a slow pace. After
-        one repetition, the metronome will speed up for the next 3 repetitions.
-        Click the button below to hear an example trial for the tongue-twister
-        "".
+        and, after one second, you will hear the metronome begin at a slow pace.
+        After four beats (1 repetition of the tongue-twister), the metronome
+        will speed up for the next 3 repetitions. Click the button below to hear
+        an example trial for the tongue-twister "ghib ting pin sid":
       </p>
-      <button v-on:click="sampleTrial">play example</button>
+      <button v-on:click="sampleTrial">&#9658; play example</button>
       <p>
         Please do your best to keep up with the metronome! If you make a
-        mistake, please do <emp>not</emp> go try to back and correct yourself.
+        mistake, DO <b>NOT</b> go back to correct yourself.
       </p>
       <p>
         We highly recommend performing this task with headphones on, in a quiet
-        environment. You can replay the example trial above and adjust your
+        place. You can replay the example trial above and adjust your
         volume to make sure you can comfortably hear the metronome.
       </p>
       <p>
-        This experiment should last approximately {{ stimList.length * .25 }}
+        This task should last approximately {{ stimList.length * .25 }}
         minutes.
       </p>
-      <button v-on:click="startTask">start experiment</button>
+      <button v-on:click="startTask">start experiment (recording will begin automatically)</button>
     </div>
 
-    <div v-if="isStarted">
-      <p>{{ stimList[currentStim]['twister'] }}</p>
+    <div v-if="isStarted" class="stim">
+      <p v-if="!trialEnded">{{ stimList[currentStim]['twister'] }}</p>
       <button v-on:click="nextTrial" v-if="trialEnded">next</button>
     </div>
   </div>

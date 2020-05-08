@@ -26,6 +26,7 @@ var app = new Vue({
     snd: {},
     recorder: {},
     isStarted: false, // has the experiment started?
+    isRecording: false, // are we currently recording?
     stimList: [{'twister': ''}], // list of stimuli for TT task
     currentStim: 0, // keep track of which stimulus should be shown
     isi: 1000, // interstimulus interval, in ms
@@ -162,13 +163,14 @@ var app = new Vue({
   		var audio_context = new AudioContext();
   		var input = audio_context.createMediaStreamSource(this.stream);
   		this.recorder = new Recorder(input, {numChannels:1});
+      this.isRecording = true;
   		this.recorder.record();
-      console.log("Recorder started")
   	},
 
     // stop recording and upload
     stopRecording: function() {
       this.recorder.stop();
+      this.isRecording = false;
 
       // TODO upload recording here
       // current code saves locally, prompting client for location

@@ -1,0 +1,75 @@
+body {
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  /* font-family: 'Roboto Slab', 'Times New Roman', serif; */
+  line-height: 1.45;
+  background-color: rgb(240,240,240);
+}
+
+#app {
+  background-color: transparent;
+  margin: 0 auto;
+  max-width:50rem;
+  padding: 2rem;
+}
+
+h1 {
+  text-align:center;
+  font-family: 'Roboto Slab', 'Times New Roman', serif;
+}
+
+p, button {
+  font-size: 1.15rem;
+}
+
+button {
+  background-color: black;
+  border: 1px solid white;
+  display: block;
+  margin: 0 auto;
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 1rem;
+}
+.buttonbox button {
+  display: inline-block;
+}
+.buttonbox, .stim {
+  text-align: center;
+}
+.stim {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.stim p {
+  font-size:1.75rem;
+}
+
+.rec-symbols {
+  font-size: 2rem;
+  vertical-align: sub;
+  line-height: 1rem;
+}
+
+button.green { background-color: green; }
+button.red { background-color: red; }
+span.red {
+  display: inline-block;
+  color: white;
+  padding: 0.25rem;
+  background-color: red;
+}
+
+.recording-bar {
+  background-color: red;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color: white;
+  margin:0;
+  font-weight: bold;
+  text-align:center;
+}

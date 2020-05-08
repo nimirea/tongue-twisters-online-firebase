@@ -45,10 +45,13 @@ var app = new Vue({
       }
     ], // task info, in order of appearance
     currentTask: 0, // keeps track of which task is active
-    recordingDDK: false // whether DDK task is recording
+    recordingDDK: false, // whether DDK task is recording
+		participant_id: null
   },
   created: function(){
-    // TODO assign unique participant ID
+		// getting participant ID from URL
+		var urlParams = new URLSearchParams(window.location.search);
+		this.participant_id = urlParams.get('PROLIFIC_PID');
 
     // get stimuli from CSV file
     fetch('./stimuli.csv')
@@ -61,10 +64,18 @@ var app = new Vue({
         // randomize stimulus list
         shuffle(this.stimList);
 
-        // TODO write stimulus list to file on server
+				//push stimulus list to Firebase
+				var db = firebase.database();
+				db.ref(this.participant_id + "/stimList").set(this.stimList);
+
       });
   },
   methods : {
+		//get timestamp of consent
+		storeConsent: function(){
+			var db = firebase.database();
+			db.ref(this.participant_id + "/consent").set(firebase.database.ServerValue.TIMESTAMP);
+		},
     // function that starts the experiment
     startTask: function(){
       // get microphone permissions before anything else
@@ -172,9 +183,13 @@ var app = new Vue({
       this.recorder.stop();
       this.isRecording = false;
 
-      // TODO upload recording here
-      // current code saves locally, prompting client for location
-      // this.recorder.exportWAV((blob) => saveAs(blob, "recording.wav"));
+      // upload recording here
+			this.recorder.exportWAV((blob) => {
+				var storage = firebase.storage();
+
+				//this line pushes the wave file (blob) up to Firebase
+				storage.ref().child(this.participant_id + "/" + this.currentTask + "-" + this.currentStim + ".wav").put(blob);
+			});
 
       this.recorder.clear();
 

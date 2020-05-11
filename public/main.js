@@ -42,11 +42,21 @@ var app = new Vue({
       {
         name: 'TT',
         sample_path: './samples/TT.mp3'
+      },
+      {
+        name: 'survey'
       }
     ], // task info, in order of appearance
     currentTask: 0, // keeps track of which task is active
     recordingDDK: false, // whether DDK task is recording
-		participant_id: null
+		participant_id: null,
+    surveySubmitted: false, // whether ending survey has been submitted or not
+    surveyData: {
+      'headphones': null,
+      'mic_type': null,
+      'mic_wired': null,
+      'anything_else': null
+    }
   },
   created: function(){
 		// getting participant ID from URL
@@ -58,7 +68,8 @@ var app = new Vue({
       .then(response => response.text())
       .then(data => {
         this.stimList = Papa.parse(data, {
-            'header': true
+            'header': true,
+            'skipEmptyLines': true
         }).data;
 
         // randomize stimulus list
@@ -112,15 +123,19 @@ var app = new Vue({
     },
 
     stopTask: function() {
-      // stop recording
-      this.stopRecording();
+      // stop recording, if it's going
+      if (this.isRecording === true) {
+        this.stopRecording();
+      }
 
-      // advance to next task
-      this.currentTask += 1;
+
 
       // end the whole experiment if we're all out of tasks
-      if (this.currentTask == this.taskList.length) {
-        this.endExp();
+      if (this.currentTask == this.taskList.length - 1) {
+        this.expOver = true;
+      } else {
+        // advance to next task
+        this.currentTask += 1;
       }
     },
 
@@ -155,7 +170,7 @@ var app = new Vue({
             this.stopRecording();
 
             // go to next item, if it exists
-            if (this.currentStim < this.stimList.length - 2) {
+            if (this.currentStim < this.stimList.length - 1) {
 
               // show continue button
               this.trialEnded = true;
@@ -222,9 +237,18 @@ var app = new Vue({
   		);
     },
 
-    endExp: function() {
-      // update view
-      this.expOver = true;
+    submitSurvey: function() {
+      // upload surveyData
+      var db = firebase.database();
+      db.ref(this.participant_id + "/surveyData").set(this.surveyData)
+      .then(() =>
+        // update view
+        {this.stopTask();}
+      );
+
+
     }
+
+
   }
 })

@@ -67,7 +67,7 @@
   </div>
 
   <!-- main experiment flow (tongue-twisters) -->
-  <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'TT'">
+  <div v-if="consentGiven && !expOver && taskList[currentTask].name == 'TT'">
     <div v-if="!isStarted">
       <h1>Task {{currentTask + 1}} of {{taskList.length}}</h1>
       <p>
@@ -102,9 +102,45 @@
   </div>
 
   <!-- experiment over -->
-  <div v-if="expOver">
-    <p>Thank you for taking part in our experiment! Your completion code is XXXXXXXX.</p>
+  <div v-if="!expOver && taskList[currentTask].name == 'survey'">
+    <h1>Post-Experiment Questionnaire</h1>
+    <h2>Did you use headphones to complete this experiment?</h2>
+    <input type="radio" v-model="surveyData.headphones" value="yes" id="yes-headphones">
+    <label for="yes-headphones">Yes</label><br/>
+
+    <input type="radio" v-model="surveyData.headphones" value="no" id="no-headphones">
+    <label for="no-headphones">No</label>
+
+    <div v-if="surveyData.headphones === 'yes'">
+      <h2>When recording your voice, which microphone did you use?</h2>
+
+      <input type="radio" v-model="surveyData.mic_type" value="headphones" id="headphones-mic">
+      <label for="headphones-mic">Headphone microphone</label><br/>
+
+      <input type="radio" v-model="surveyData.mic_type" value="built-in" id="builtin-mic">
+      <label for="builtin-mic">Computer's built-in microphone</label>
+    </div>
+
+    <div v-if="surveyData.mic_type === 'headphones'">
+      <h2>Are your headphones wired or wireless/Bluetooth?</h2>
+
+      <input type="radio" v-model="surveyData.mic_wired" value="wired" id="wired-mic">
+      <label for="wired-mic">Wired</label><br/>
+
+      <input type="radio" v-model="surveyData.mic_wired" value="bt" id="bt-mic">
+      <label for="bt-mic">Wireless/Bluetooth</label>
+    </div>
+
+    <h2>Is there anything else you'd like us to know about your experience? (optional)</h2>
+    <textarea v-model="surveyData.anything_else"></textarea>
+
+    <button v-on:click="submitSurvey" v-if="surveyData.headphones == 'no' || surveyData.mic_type == 'built-in' || surveyData.mic_wired !== null">
+      submit answers
+    </button>
+
   </div>
+
+  <p v-if="expOver">Your response has been successfully submitted. Thank you for taking part in our experiment!</p>
 </div>
 
 <!-- other external libraries used -->

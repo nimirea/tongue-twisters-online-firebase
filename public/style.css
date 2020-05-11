@@ -73,3 +73,9 @@ span.red {
   font-weight: bold;
   text-align:center;
 }
+
+textarea {
+  margin-bottom:1rem;
+  width:100%;
+  min-height:5rem;
+}

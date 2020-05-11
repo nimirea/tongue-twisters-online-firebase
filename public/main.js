@@ -63,12 +63,7 @@ var app = new Vue({
 
         // randomize stimulus list
         shuffle(this.stimList);
-
-				//push stimulus list to Firebase
-				var db = firebase.database();
-				db.ref(this.participant_id + "/stimList").set(this.stimList);
-
-      });
+      })
   },
   methods : {
 		//get timestamp of consent
@@ -78,7 +73,15 @@ var app = new Vue({
 
       // upload timestamp
 			var db = firebase.database();
-			db.ref(this.participant_id + "/consent").set(firebase.database.ServerValue.TIMESTAMP);
+      db.ref().once('value').then((snapshot) => {
+        if (this.participant_id === null) {
+          this.participant_id = snapshot.numChildren();
+        }
+      }).then(() => {
+	     db.ref(this.participant_id + "/consent").set(firebase.database.ServerValue.TIMESTAMP);
+       // upload stimList
+       db.ref(this.participant_id + "/stimList").set(this.stimList);
+      });
 		},
     // function that starts the experiment
     startTask: function(){

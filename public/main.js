@@ -51,7 +51,7 @@ var app = new Vue({
     recordingDDK: false, // whether DDK task is recording
 		participant_id: null,
     surveySubmitted: false, // whether ending survey has been submitted or not
-    surveyData: {
+    surveyData: { // data for the survey at the end
       'headphones': null,
       'mic_type': null,
       'mic_wired': null,
@@ -68,7 +68,7 @@ var app = new Vue({
 		this.participant_id = urlParams.get('PROLIFIC_PID');
 
     // get stimuli from CSV file
-    fetch('./stimulit.csv')
+    fetch('./stimuli.csv')
       .then(response => response.text())
       .then(data => {
         this.stimList = Papa.parse(data, {

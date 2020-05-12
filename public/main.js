@@ -60,12 +60,14 @@ var app = new Vue({
       'browserOther': null,
       'os': null,
       'osOther': null
-    }
+    },
+    test_mode: null // whether to write to database (null = do it, yes = don't)
   },
   created: function(){
 		// getting participant ID from URL
 		var urlParams = new URLSearchParams(window.location.search);
 		this.participant_id = urlParams.get('PROLIFIC_PID');
+    this.test_mode = urlParams.get('TEST_MODE')
 
     // get stimuli from CSV file
     fetch('./stimuli.csv')
@@ -81,22 +83,24 @@ var app = new Vue({
       })
   },
   methods : {
-		//get timestamp of consent
+		//get timestamp of consent & upload sequence data to database
 		storeConsent: function(){
       // update view
       this.consentGiven = true;
 
       // upload timestamp
-			var db = firebase.database();
-      db.ref().once('value').then((snapshot) => {
-        if (this.participant_id === null) {
-          this.participant_id = snapshot.numChildren();
-        }
-      }).then(() => {
-	     db.ref(this.participant_id + "/consent").set(firebase.database.ServerValue.TIMESTAMP);
-       // upload stimList
-       db.ref(this.participant_id + "/stimList").set(this.stimList);
-      });
+      if (this.test_mode !== 'yes') {
+  			var db = firebase.database();
+        db.ref().once('value').then((snapshot) => {
+          if (this.participant_id === null) {
+            this.participant_id = snapshot.numChildren();
+          }
+        }).then(() => {
+  	     db.ref(this.participant_id + "/consent").set(firebase.database.ServerValue.TIMESTAMP);
+         // upload stimList
+         db.ref(this.participant_id + "/stimList").set(this.stimList);
+        });
+      }
 		},
     // function that starts the experiment
     startTask: function(){
@@ -126,6 +130,7 @@ var app = new Vue({
 
     },
 
+    // stop task and continue to next one (or end the experiment, if we're all out of tasks)
     stopTask: function() {
       // stop recording, if it's going
       if (this.isRecording === true) {
@@ -212,13 +217,14 @@ var app = new Vue({
       var filename = this.taskList[this.currentTask].name + "-" + this.currentStim
 
       // upload recording here
-			this.recorder.exportWAV((blob) => {
-				var storage = firebase.storage();
+      if (this.test_mode !== 'yes') {
+  			this.recorder.exportWAV((blob) => {
+  				var storage = firebase.storage();
 
-				//this line pushes the wave file (blob) up to Firebase
-				storage.ref().child(this.participant_id + "/" + filename + ".wav").put(blob);
-			});
-
+  				//this line pushes the wave file (blob) up to Firebase
+  				storage.ref().child(this.participant_id + "/" + filename + ".wav").put(blob);
+  			});
+      }
       this.recorder.clear();
 
     },
@@ -241,14 +247,19 @@ var app = new Vue({
   		);
     },
 
+    // push survey data and end the survey
     submitSurvey: function() {
       // upload surveyData
-      var db = firebase.database();
-      db.ref(this.participant_id + "/surveyData").set(this.surveyData)
-      .then(() =>
-        // update view
-        {this.stopTask();}
-      );
+      if (this.test_mode !== 'yes') {
+        var db = firebase.database();
+        db.ref(this.participant_id + "/surveyData").set(this.surveyData)
+        .then(() =>
+          // update view
+          {this.stopTask();}
+        );
+      } else {
+        this.stopTask();
+      }
 
 
     }

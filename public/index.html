@@ -104,6 +104,44 @@
   <!-- experiment over -->
   <div v-if="!expOver && taskList[currentTask].name == 'survey'">
     <h1>Post-Experiment Questionnaire</h1>
+
+    <h2>What browser are you using?</h2>
+
+    <input type="radio" v-model="surveyData.browser" value="chrome" id="chrome-browser">
+    <label for="chrome-browser">Chrome</label></br>
+
+    <input type="radio" v-model="surveyData.browser" value="firefox" id="firefox-browser">
+    <label for="firefox-browser">Firefox</label></br>
+
+    <input type="radio" v-model="surveyData.browser" value="ie" id="ie-browser">
+    <label for="ie-browser">Internet Explorer</label><br/>
+
+    <input type="radio" v-model="surveyData.browser" value="safari" id="safari-browser">
+    <label for="safari-browser">Safari</label><br/>
+
+    <input type="radio" v-model="surveyData.browser" value="other" id="other-browser">
+    <label for="other-browser">Other
+      <input v-if="surveyData.browser == 'other'" v-model="surveyData.browserOther" placeholder="please specify">
+    </label>
+
+    <h2>What operating system are you using?</h2>
+
+    <input type="radio" v-model="surveyData.os" value="windows" id="windows-os">
+    <label for="windows-os">Windows</label></br>
+
+    <input type="radio" v-model="surveyData.os" value="mac" id="mac-os">
+    <label for="mac-os">Mac</label></br>
+
+    <input type="radio" v-model="surveyData.os" value="linux" id="linux-os">
+    <label for="linux-os">Linux</label></br>
+
+    <input type="radio" v-model="surveyData.os" value="other" id="other-os">
+    <label for="other-os">Other
+      <input v-if="surveyData.os == 'other'" v-model="surveyData.osOther" placeholder="please specify">
+    </label>
+
+
+
     <h2>Did you use headphones to complete this experiment?</h2>
     <input type="radio" v-model="surveyData.headphones" value="yes" id="yes-headphones">
     <label for="yes-headphones">Yes</label><br/>
@@ -134,7 +172,7 @@
     <h2>Is there anything else you'd like us to know about your experience? (optional)</h2>
     <textarea v-model="surveyData.anything_else"></textarea>
 
-    <button v-on:click="submitSurvey" v-if="surveyData.headphones == 'no' || surveyData.mic_type == 'built-in' || surveyData.mic_wired !== null">
+    <button v-on:click="submitSurvey" v-if="surveyData.browser != null && surveyData.os != null && (surveyData.headphones == 'no' || surveyData.mic_type == 'built-in' || surveyData.mic_wired !== null)">
       submit answers
     </button>
 
@@ -144,7 +182,7 @@
 </div>
 
 <!-- other external libraries used -->
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzicato/0.6.1/Pizzicato.min.js"></script>
 
 <!-- same-source scripts -->

@@ -55,7 +55,11 @@ var app = new Vue({
       'headphones': null,
       'mic_type': null,
       'mic_wired': null,
-      'anything_else': null
+      'anything_else': null,
+      'browser': null,
+      'browserOther': null,
+      'os': null,
+      'osOther': null
     }
   },
   created: function(){
@@ -64,7 +68,7 @@ var app = new Vue({
 		this.participant_id = urlParams.get('PROLIFIC_PID');
 
     // get stimuli from CSV file
-    fetch('./stimuli.csv')
+    fetch('./stimulit.csv')
       .then(response => response.text())
       .then(data => {
         this.stimList = Papa.parse(data, {

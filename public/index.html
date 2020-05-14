@@ -14,7 +14,7 @@
 <body>
 
 <div id="app" v-cloak>
-  <p class="recording-bar" v-if="isRecording">recording now</p>
+  <p class="recording-bar" v-if="isRecording">recording</p>
 
   <!-- consent form -->
   <div v-if="!consentGiven">
@@ -42,6 +42,40 @@
     <p v-if="rejected">Thanks for checking out our experiment. You may close this window now.</p>
   </div>
 
+  <!-- mic check -->
+  <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'mic_check'">
+    <h1>Task {{currentTask + 1}} of {{taskList.length}}: Microphone Test</h1>
+    <p>We will need to record your voice during this experiment, so
+      at this time, we'd like you to check that your microphone is properly placed.
+    </p>
+    <p>
+      When you are ready, please press the button, and then start speaking at a
+      comfortable volume.
+      Adjust your microphone so that the bar at the bottom of the screen
+      is in the "just right" <span class="light-green">(green)</span> range whenever you are speaking.
+      This test will not be stored.
+    </p>
+    <p>
+      (Note: whenever your microphone is active during this experiment, you will
+      see a <span class="red">red</span> "recording" bar at the top of your
+      screen.)
+    </p>
+    <button v-on:click="startTask" v-if="!isRecording"><span class="rec-symbols">&#x25cf;</span> start test</button>
+    <button v-on:click="stopTask" v-if="isRecording"><span class="rec-symbols">&#9632;</span> stop test and continue</button>
+
+    <!--volume feedback-->
+    <p style="text-align:center;">&nbsp;<span v-if="isRecording">{{ soundbar.message }}</span></p>
+    <!-- volume meter  -->
+    <div
+      style="width:100%;height:0.75rem;border:1px solid black; z-index:1"
+      v-bind:style="{'background':'linear-gradient(90deg, rgba(0,0,0,1)' +  soundbar.width + '%, rgba(255,255,255,0) ' +  soundbar.width + '%)'}">
+      <!-- range marker -->
+      <div
+        v-bind:style="{'width': soundbar.cutoffs.high - soundbar.cutoffs.low + '%', marginLeft: soundbar.cutoffs.low + '%'}"
+        style="background-color: rgb(100, 250, 100); height:2rem; position:relative; top: -0.625rem; z-index: -1"></div>
+    </div>
+  </div>
+
   <!-- DDK task -->
   <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'DDK'">
     <div v-if="!isStarted">
@@ -57,11 +91,11 @@
       <button v-on:click="sampleTrial">&#9658; play example</button>
       <p>
         Once you've listened to this example, please practice once before
-        recording yourself.
+        recording yourself. This recording will be stored and uploaded for
+        analysis.
       </p>
-      <p>When recording is on, you will see a <span class="red">red</span> bar at the top of the screen.</p>
       <button v-on:click="startTask" v-if="!recordingDDK"><span class="rec-symbols">&#x25cf;</span> start recording</button>
-      <button v-on:click="stopTask" v-if="recordingDDK"><span class="rec-symbols">&#9632;</span> stop recording</button>
+      <button v-on:click="stopTask" v-if="recordingDDK"><span class="rec-symbols">&#9632;</span> stop recording and continue</button>
 
     </div>
   </div>
@@ -90,7 +124,7 @@
       </p>
       <p>
         This task should last approximately {{ stimList.length * .25 }}
-        minutes.
+        minutes. Your recordings will be stored and uploaded for analysis.
       </p>
       <button v-on:click="startTask">start experiment (recording will begin automatically)</button>
     </div>
@@ -103,7 +137,7 @@
 
   <!-- experiment over -->
   <div v-if="!expOver && taskList[currentTask].name == 'survey'">
-    <h1>Post-Experiment Questionnaire</h1>
+    <h1>Task {{currentTask + 1}} of {{taskList.length}}: Post-Experiment Questionnaire</h1>
 
     <h2>What browser are you using?</h2>
 

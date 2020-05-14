@@ -23,8 +23,18 @@ var app = new Vue({
   el: '#app',
   data: {
     stream: {},
-    snd: {},
+    snd: {}, // sound to be played
     recorder: {},
+    analyserNode: {}, // volume meter
+    soundbar: { // parameters for bar that displays while sound is playing
+      'color': 'blue',
+      'width': 0,
+      'text': 'just right',
+      cutoffs: {
+        low: 35,
+        high: 92
+      }
+    },
     isStarted: false, // has the experiment started?
     isRecording: false, // are we currently recording?
     stimList: [{'twister': ''}], // list of stimuli for TT task
@@ -35,6 +45,9 @@ var app = new Vue({
     trialEnded: false, // TT task
     expOver: false,
     taskList: [ // tasks, in order
+      {
+        name: 'mic_check'
+      },
       {
         name: 'DDK',
         sample_path: './samples/pataka_online.m4a'
@@ -121,6 +134,8 @@ var app = new Vue({
 
             // for DDK task we just need to record and then stop
             this.recordingDDK = true;
+          } else if (this.taskList[this.currentTask].name == 'mic_check') {
+            this.record();
           }
 
         	}).catch((err) => {
@@ -205,19 +220,96 @@ var app = new Vue({
   		var audio_context = new AudioContext();
   		var input = audio_context.createMediaStreamSource(this.stream);
   		this.recorder = new Recorder(input, {numChannels:1});
+
+      // update view
       this.isRecording = true;
+
+      // start updating the soundbar if we're on the mic-check
+      if (this.taskList[this.currentTask].name == "mic_check") {
+        this.analyserNode = audio_context.createAnalyser();
+        this.analyserNode.fftSize = 2048;
+        input.connect(this.analyserNode);
+        this.updateAnalysers();
+      }
+
+      // actually start recording
   		this.recorder.record();
   	},
+
+    // update soundbar width based on volume
+    updateAnalysers: function() {
+      if (this.isRecording) {
+    	   requestAnimationFrame(this.updateAnalysers);
+       }
+
+			const freqByteData = new Uint8Array(this.analyserNode.frequencyBinCount);
+			this.analyserNode.getByteFrequencyData(freqByteData);
+
+      const data = new Array(255);
+      let lastNonZero = 0;
+      let datum;
+
+      for (let idx = 0; idx < 255; idx += 1) {
+        datum = Math.floor(freqByteData[idx]) - (Math.floor(freqByteData[idx]) % 5);
+
+        if (datum !== 0) {
+          lastNonZero = idx;
+        }
+
+        data[idx] = datum;
+      }
+
+			//average values in data array (range: 1-100)
+			var values = 0;
+			for (var i = 0; i < data.length; i++) {
+				values += data[i];
+			}
+			this.soundbar.width = (values / data.length) / 1.5; // adding in this factor makes it smoother
+
+      if (this.soundbar.width < this.soundbar.cutoffs.low) {
+        this.soundbar.message = "too soft, move microphone closer (or start speaking)";
+        this.soundbar.color = "red";
+      } else if (this.soundbar.width > this.soundbar.cutoffs.high) {
+        this.soundbar.message = "too loud, move microphone farther away";
+        this.soundbar.color = "red";
+      } else {
+        this.soundbar.message = "just right!";
+        this.soundbar.color = "blue";
+      }
+  	},
+
+    // stop recording and play back
+    playbackTest: function() {
+      this.recorder.stop();
+      this.recorder.exportWAV((blob) => {
+        let dataURI = URL.createObjectURL(blob);
+        let testSound = new Pizzicato.Sound(
+    			{
+    				source:'file',
+    				options: {
+    					path: dataURI,
+    					loop: false
+    				}
+    			},
+
+          // when sound is loaded, just play it
+    			() => {
+            testSound.play();
+          }
+    		);
+      });
+    },
 
     // stop recording and upload
     stopRecording: function() {
       this.recorder.stop();
       this.isRecording = false;
+
       // compute filename here
       var filename = this.taskList[this.currentTask].name + "-" + this.currentStim
 
       // upload recording here
-      if (this.test_mode !== 'yes') {
+      if (this.test_mode !== 'yes' && this.taskList[this.currentTask].name !== 'mic_check') {
   			this.recorder.exportWAV((blob) => {
   				var storage = firebase.storage();
 

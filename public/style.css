@@ -53,25 +53,29 @@ button {
   line-height: 1rem;
 }
 
-button.green { background-color: green; }
-button.red { background-color: red; }
-span.red {
+.light-green { background-color: rgb(100, 250, 100); }
+.green { background-color: green; }
+.red { background-color: red; }
+.blue { background-color: blue; }
+span.red, span.blue, span.light-green {
   display: inline-block;
-  color: white;
   padding: 0.25rem;
-  background-color: red;
+}
+span.red, span.blue {
+  color: white;
 }
 
 .recording-bar {
-  background-color: red;
   position: fixed;
   top: 0;
   left: 0;
+  height:1.5rem;
   width: 100%;
   color: white;
   margin:0;
   font-weight: bold;
   text-align:center;
+  background-color: red;
 }
 
 textarea {

@@ -76,30 +76,6 @@
     </div>
   </div>
 
-  <!-- DDK task -->
-  <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'DDK'">
-    <div v-if="!isStarted">
-      <h1>Task {{currentTask + 1}} of {{taskList.length}}</h1>
-      <p>
-        In this task, we will ask you to repeat a sequence of syllables as
-        quickly as possible, without slurring them together.
-      </p>
-      <p>
-        Please say "puh tuh kuh" 6 times as quickly and as accurately as
-        possible, as in the following example.
-      </p>
-      <button v-on:click="sampleTrial">&#9658; play example</button>
-      <p>
-        Once you've listened to this example, please practice once before
-        recording yourself. This recording will be stored and uploaded for
-        analysis.
-      </p>
-      <button v-on:click="startTask" v-if="!recordingDDK"><span class="rec-symbols">&#x25cf;</span> start recording</button>
-      <button v-on:click="stopTask" v-if="recordingDDK"><span class="rec-symbols">&#9632;</span> stop recording and continue</button>
-
-    </div>
-  </div>
-
   <!-- main experiment flow (tongue-twisters) -->
   <div v-if="consentGiven && !expOver && taskList[currentTask].name == 'TT'">
     <div v-if="!isStarted">

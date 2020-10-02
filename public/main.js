@@ -49,10 +49,6 @@ var app = new Vue({
         name: 'mic_check'
       },
       {
-        name: 'DDK',
-        sample_path: './samples/pataka_online.m4a'
-      },
-      {
         name: 'TT',
         sample_path: './samples/TT.mp3'
       },

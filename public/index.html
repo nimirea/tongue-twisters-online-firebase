@@ -10,34 +10,152 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
   <link href="./style.css" rel="stylesheet" type="text/css" />
+
 </head>
 <body>
 
+
 <div id="app" v-cloak>
+
+  <!-- check if the day value is a valid value -->
+  <div v-if="day > 4 | Number.isNaN(day) | day < 1">
+    <h1>Invalid URL</h1>
+    <p>Are you sure that you're in the right place? Please make sure you've clicked the correct link, and send a message to your experimenter if the issue persists.</p>
+  </div>
+
+  <!-- check if participants CAN continue to the next day -->
+  <div v-else-if="prevDayIncomplete & day != 1">
+    <h1>Previous day not completed</h1>
+    <p>You must complete all sessions in order. If you completed Day {{ day - 1 }} already, please send a message to your experimenter.</p>
+  </div>
+
+  <div v-else-if="alreadyDone">
+    <h1>Already completed this session</h1>
+    <p>You have already completed this session. Did you click on the previous day's link?</p>
+  </div>
+
+  <div v-else-if="timingCorrect == 'early'">
+    <h1>Too early</h1>
+    <p v-if="timingCorrect == 'early'">Please refresh this page in {{ timeRemainingString }}.</p>
+  </div>
+
+  <div v-else-if="timingCorrect === 'just right'">
+
   <p class="recording-bar" v-if="isRecording">recording</p>
 
   <!-- consent form -->
   <div v-if="!consentGiven">
-    <h1>Consent Form Test</h1>
-    <p>Text of consent form will go here. This is just a placeholder.</p>
-    <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In in tellus sem. Vivamus elementum porta ligula non tincidunt. Praesent pharetra sit amet orci in bibendum. Suspendisse pharetra eros at risus porttitor, id egestas neque tincidunt. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Cras fermentum diam eget ante suscipit, vel dictum dolor bibendum. Duis id egestas erat. Integer vehicula venenatis ipsum, eu condimentum metus viverra sed. Sed consequat dui ut sollicitudin ullamcorper. Vestibulum non velit tempus enim mattis suscipit. Maecenas velit elit, commodo a malesuada vitae, suscipit consequat massa.
-    </p>
-    <p>
-    Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut ac nisl accumsan lorem vulputate feugiat. Integer ante urna, blandit ut tortor at, porttitor vulputate massa. Donec eu elit metus. Donec vitae orci mollis, dapibus urna vel, eleifend nibh. Vivamus a nulla eu tellus egestas efficitur a vestibulum felis. Fusce fermentum tortor eget ex dapibus dignissim. Vestibulum elit ante, feugiat et bibendum non, sollicitudin ac turpis. Duis tristique tempus ex eu imperdiet. Duis vel neque risus. Nulla ultrices dictum nunc, et cursus nisl eleifend congue. Ut pharetra est velit, eget ultrices erat varius a. Nullam luctus vehicula ipsum, eu auctor lacus molestie eget.
-    </p>
-    <p>
-    Maecenas auctor, velit sit amet dignissim blandit, lacus mi ultricies metus, sed condimentum sem enim in massa. Maecenas ut metus eget odio auctor venenatis sed nec magna. Donec id lacus eu urna condimentum auctor non ut massa. Quisque nisl urna, molestie sit amet tincidunt ut, imperdiet eu neque. Nunc sed dignissim metus, sit amet porta eros. Quisque elementum nibh in lacus pellentesque imperdiet. Morbi nec leo vitae orci lacinia pharetra volutpat sit amet risus. Proin libero justo, mollis sed ultrices at, mollis sed nunc. Etiam vehicula, nisi eu blandit maximus, dolor augue pharetra ipsum, viverra auctor metus libero sit amet dolor.
-    </p>
-    <p>
-    Morbi sollicitudin, ipsum ut tincidunt interdum, leo odio elementum felis, dignissim tempor ligula felis vel arcu. Nullam maximus metus elit, vel feugiat diam efficitur vel. Morbi scelerisque eget elit id viverra. Pellentesque euismod rhoncus justo vitae aliquam. Vivamus sagittis dolor sit amet erat aliquet, vitae efficitur justo viverra. Sed at lectus augue. Sed egestas suscipit tellus at ultrices. Phasellus tincidunt mi velit, et condimentum velit condimentum eget. Donec aliquet nulla quis leo aliquam finibus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum facilisis pretium dolor, vel tincidunt ipsum congue a.
-    </p>
-    <p>
-    Donec blandit libero eu libero tristique tempor. Quisque eu leo volutpat, bibendum lorem eu, molestie ligula. Donec non diam ante. Integer vel nisl et augue eleifend blandit in sit amet nisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi maximus purus at sapien commodo dictum. Etiam in ex tincidunt, viverra mauris quis, eleifend tortor. Aenean a posuere dolor.
-    </p>
+    <h1>Consent to Participate in Research (Day {{ day }})</h1>
+
+    <h2>Title of Research Study: <span class="italic">Tongue-Twisters Across Multiple Days</span></h2>
+
+    <h2>Principal Investigator:
+    <span class="italic">Matthew Goldrick</span></h2>
+
+    <h2>Student Investigator:
+    <span class="italic">Nicole Mirea</span></h2>
+
+    <h2>Supported By:
+    <span class="normal-weight">This research is supported by the Northwestern University Department of Linguistics.</span></h2>
+
+    <h2>Key Information about this research study:</h2>
+
+    <p>The following is a short summary of this study to help you decide whether to be a part of this study. Information that is more detailed is explained later on in this form.</p>
+    <ul>
+      <li>The purpose of this study is to learn more about how people learn to speak words and phrases in a new language.</li>
+      <li>You will be asked to read some tongue-twisters aloud while recording yourself. </li>
+      <li>This research study will take place across 4 days, with a 1-hour session on each day (4 hours total).</li>
+      <li>The main benefit of being in this study is helping scientists better understand language learning.</li>
+    </ul>
+
+    <h2>Why am I being asked to take part in this research study?</h2>
+    <p>We are asking you to take part in this research study because you have indicated to Prolific that you are a native English speaker living in the United States with no history of speech, language, or hearing impairment. In addition, you responded to our screening survey indicating that you own the equipment necessary to complete the task, and that you would be willing to log into the study at the same time for 4 days in a row.</p>
+
+    <h2>How many people will be in this study?</h2>
+    <p>We expect about 32 people will be in this research study.</p>
+
+    <h2>What should I know about participating in a research study?</h2>
+    <p>The {{ numerals[day-1] }} of four sessions will begin. These sessions will be spaced 24 hours apart, and each session will take approximately 1 hour to complete.</p>
+    <p>Each session will have 3 parts:</p>
+    <ol>
+      <li>You will first be asked to test out your microphone, to make sure that it is close enough for us to record clear speech.</li>
+      <li>Then, you will be asked to put on headphones and read tongue-twisters for about 50 minutes. We will be recording audio during this part of the experiment; <b>allowing us to record audio is mandatory for participating in this research</b>, since we are studying spoken language.</li>
+      <li>Finally, you will be asked to complete a post-task survey about your equipment and your sleep habits.</li>
+    </ol>
+    <p>After completing the post-task survey on days 1-3, you will be asked to complete the next day’s session of this study 24 hours later. The next day’s session will become visible to you on Prolific after completing the current session, but before 24 hours have elapsed.</p>
+
+    <h2>Will being in this study help me in any way?</h2>
+    <p>We cannot promise any benefits to you or others from your taking part in this research. However, possible benefits include contributing to science that can help create better language-learning tools.</p>
+
+    <h2>Is there any way being in this study could be bad for me?</h2>
+    <p>You may experience boredom and/or frustration during the tongue-twister task, which is quite difficult. You will have the opportunity to take breaks during the study in order to help with this.</p>
+    <p>A possible risk for any research is that confidentiality could be compromised – that is, that people outside the study might get hold of confidential study information.  We will do everything we can to minimize this risk, as described in more detail later in this form.</p>
+
+    <h2>What happens if I do not want to be in this research, or I change my mind later?</h2>
+    <p>Participation in research is voluntary. You can decide to participate or not to participate.  If you do not want to be in this study or withdraw from the study at any point, your decision will not affect your relationship with Northwestern University/Northwestern Memorial Healthcare.</p>
+    <p>You can leave the research at any time and it will not be held against you.</p>
+    <p>If you decide to withdraw from this study, the researchers will ask you if information already collected from you can be used.</p>
+
+    <h2>How will the researchers protect my information?</h2>
+    <p>After data collection is finished, your Prolific ID will be stripped from your survey answers and recordings, and replaced with a random number. The mapping between Prolific ID and this random number, as well as your recordings and survey answers, will be stored and backed up on a secure server that only project personnel, the IRB staff, and any other individual required by law will be authorized to access.</p>
+
+    <h2>Who will have access to the information collected during this research study?</h2>
+    <p>Efforts will be made to limit the use and disclosure of your personal information, including research study records, to people who have a need to review this information. We cannot promise complete secrecy.</p>
+    <p>There are reasons why information about you may be used or seen by other people beyond the research team during or after this study. Examples include:</p>
+
+    <ul>
+      <li>University officials, government officials, study funders, auditors, and the Institutional Review Board may need access to the study information to make sure the study is done in a safe and appropriate manner.</li>
+      <li>The research team may give information to appropriate authorities for reasons of health and safety – for example, if you indicate that you plan to harm yourself or others, or for public health reasons.</li>
+      <li>We will not ask you about child abuse, but if you tell us about child abuse or neglect, we may be required or permitted by law or policy to report to authorities.</li>
+    </ul>
+
+    <h2>How might the information collected in this study be shared in the future?</h2>
+    <p>We will keep the information we collect about you during this research study for study recordkeeping. Your recordings and other information that can directly identify you will be stored securely and separately from the rest of the research information we collect from you.</p>
+    <p>De-identified data from this study may be shared with the research community, with journals in which study results are published, and with databases and data repositories used for research. We will remove or code any personal information that could directly identify you before the study data are shared. Despite these measures, we cannot guarantee anonymity of your personal data.</p>
+    <p>We would like to share your identifiable information (audio recordings) with the general public and other researchers for future research studies.  We will ask for your consent to do so at the end of this form.  You can be in this current research study without agreeing to future research use of your audio recordings.</p>
+    <p>The results of this study could be shared in articles and presentations, but will not include any information that identifies you unless you give permission for use of information that identifies you in articles and presentations.</p>
+
+    <h2>Will I be paid or given anything for taking part in this study?</h2>
+    <p>You will receive up to $80 for your participation in this study, granted through Prolific. This money will be paid out in the following way, so that you can still receive compensation for your time even if you choose to withdraw before completing the entire 4-day study:</p>
+
+    <ul>
+      <li v-for="(item, index) in compensation">
+        After completing Day {{ index + 1 }}'s session<span v-if="index == (day - 1)"> (today)</span>, you will receive ${{ item }}
+      </li>
+    </ul>
+
+    <h2>Who can I talk to?</h2>
+    <p>If you have questions, concerns, or complaints, you can contact Principal Investigator Matt Goldrick (matt-goldrick@northwestern.edu) and Nicole Mirea (nimirea@u.northwestern.edu).</p>
+    <p>This research has been reviewed and approved by an Institutional Review Board ("IRB") – an IRB is a committee that protects the rights of people who participate in research studies. You may contact the IRB by phone at (312) 503-9338 or by email at irb@northwestern.edu if:</p>
+
+    <ul>
+      <li>Your questions, concerns, or complaints are not being answered by the research team.</li>
+      <li>You cannot reach the research team.</li>
+      <li>You want to talk to someone besides the research team.</li>
+      <li>You have questions about your rights as a research participant.</li>
+      <li>You want to get information or provide input about this research.</li>
+    </ul>
+
+    <h2>Optional Elements:</h2>
+    <p>The following research activities are optional, meaning that you do not have to agree to them in order to participate in the research study. Please indicate your willingness to participate in these optional activities by checking the box next to each activity.</p>
+
+  <p class="flex-contain">
+    <input type="checkbox" v-model="audioPermission.presentation" id="presentation">
+    <label for="presentation">The researchers may use audio recordings of me in scholarly presentations or publications when hearing my voice might serve to help others understand the research.</label><br/>
+  </p>
+
+  <p class="flex-contain">
+    <input type="checkbox" v-model="audioPermission.public" id="public">
+    <label for="public">I give permission for the recordings of my voice to be included in a database that is available to the general public. </label><br/>
+  </p>
+
+    <p>If you want a copy of this consent for your records, you can print it from the screen.</p>
+    <p>If you wish to participate, please click the “I Agree” button and you will be taken to the microphone test.</p>
+    <p>If you do not wish to participate in this study, please select “I Disagree” or select X in the corner of your browser.</p>
+
     <div class = "buttonbox">
       <button v-on:click="storeConsent" class="green">I agree! Take me to the experiment</button>
-      <button v-on:click="rejected = true;" class="red">I do not consent</button>
+      <button v-on:click="rejected = true;" class="red">I disagree</button>
     </div>
     <p v-if="rejected">Thanks for checking out our experiment. You may close this window now.</p>
   </div>
@@ -48,11 +166,31 @@
     <p>We will need to record your voice during this experiment, so
       at this time, we'd like you to check that your microphone is properly placed.
     </p>
+    <p>Important notes:
+    </p>
+    <ul>
+      <li>Please perform this microphone check (and the rest of this 1-hour experiment)
+          <b>in a quiet place</b>, with no distractions.</li>
+      <li>You will need headphones for the rest of the experiment.
+        <b>If you are using Bluetooth headphones that have a microphone,
+      please DO NOT use your Bluetooth headphones to record! Use your computer's
+      built-in microphone (or a pair of wired headphones, if you have them) instead.</b> This will ensure
+      that we can record stable audio throughout the session. <b>You will need to change your
+      default sound input settings <i>before</i> performing this test; here are
+      instructions on how to do this on
+      <a href="https://brentsaltzman.com/set-microphone-level-windows-10/">
+      Windows 10</a>, <a href="https://brentsaltzman.com/set-microphone-level-windows-7/">Windows 7</a>, and
+      <a href="https://support.apple.com/guide/mac-help/change-the-sound-input-settings-mchlp2567/mac">
+      Mac</a>.
+      </b>
+      <li>Please <b>do NOT refresh the page</b> at any point during this experiment.</li>
+    </ul>
     <p>
-      When you are ready, please press the button, and then start speaking at a
+      When your microphone is configured correctly and you are in a quiet place, please press the button below, and then start speaking at a
       comfortable volume.
-      Adjust your microphone so that the bar at the bottom of the screen
-      is in the "just right" <span class="light-green">(green)</span> range whenever you are speaking.
+      Adjust the position of your microphone so that the bar at the bottom of the screen
+      is in the "just right" <span class="light-green">(green)</span> range whenever you are speaking,
+      and as far to the left as possible when you are not.
       This test will not be stored.
     </p>
     <p>
@@ -86,7 +224,7 @@
         and, after one second, you will hear the metronome begin at a slow pace.
         After four beats (1 repetition of the tongue-twister), the metronome
         will speed up for the next 3 repetitions. Click the button below to hear
-        an example trial for the tongue-twister "ghib ting pin sid":
+        an example trial for the tongue-twister "ghib ting pin diss":
       </p>
       <button v-on:click="sampleTrial">&#9658; play example</button>
       <p>
@@ -94,8 +232,7 @@
         mistake, DO <b>NOT</b> go back to correct yourself.
       </p>
       <p>
-        Please perform this task <b>with your headphones on, in a quiet
-        place</b>. You can replay the example trial above and adjust your
+        Please perform this task <b>with your headphones on</b>. You can replay the example trial above and adjust your
         volume to make sure you can comfortably hear the metronome.
       </p>
       <p>
@@ -106,109 +243,320 @@
     </div>
 
     <div v-if="isStarted" class="stim">
-      <p v-if="!trialEnded">{{ stimList[currentStim]['twister'] }}</p>
+      <p v-if="!trialEnded">
+          {{ stimList[currentStim]['twister'] }}
+      </p>
+      <p v-else>
+        <!-- TODO put fixation cross image here -->
+        <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
+      </p>
       <button v-on:click="nextTrial" v-if="trialEnded">next</button>
+      <button v-else class="invisible"></button> <!-- for consistent spacing -->
     </div>
   </div>
 
   <!-- experiment over -->
-  <div v-if="!expOver && taskList[currentTask].name == 'survey'">
-    <h1>Task {{currentTask + 1}} of {{taskList.length}}: Post-Experiment Questionnaire</h1>
+  <div v-if="(!expOver && taskList[currentTask].name == 'survey')">
+    <h1>Task {{currentTask + 1}} of {{taskList.length}}: Post-Task Survey</h1>
 
-    <h2>What browser are you using?</h2>
+    <h2>Equipment</h2>
+
+    <h3>What browser are you using?</h3>
 
     <input type="radio" v-model="surveyData.browser" value="chrome" id="chrome-browser">
-    <label for="chrome-browser">Chrome</label></br>
+    <label for="chrome-browser">Chrome</label><br/>
 
     <input type="radio" v-model="surveyData.browser" value="firefox" id="firefox-browser">
-    <label for="firefox-browser">Firefox</label></br>
+    <label for="firefox-browser">Firefox</label><br/>
 
     <input type="radio" v-model="surveyData.browser" value="ie" id="ie-browser">
-    <label for="ie-browser">Internet Explorer</label><br/>
+    <label for="ie-browser">Microsoft Edge</label><br/>
 
     <input type="radio" v-model="surveyData.browser" value="safari" id="safari-browser">
     <label for="safari-browser">Safari</label><br/>
 
     <input type="radio" v-model="surveyData.browser" value="other" id="other-browser">
-    <label for="other-browser">Other
+    <label for="other-browser">Other browser
       <input v-if="surveyData.browser == 'other'" v-model="surveyData.browserOther" placeholder="please specify">
     </label>
 
-    <h2>What operating system are you using?</h2>
+    <h3>What operating system are you using?</h3>
 
     <input type="radio" v-model="surveyData.os" value="windows" id="windows-os">
-    <label for="windows-os">Windows</label></br>
+    <label for="windows-os">Windows</label><br/>
 
     <input type="radio" v-model="surveyData.os" value="mac" id="mac-os">
-    <label for="mac-os">Mac</label></br>
+    <label for="mac-os">Mac</label><br/>
 
     <input type="radio" v-model="surveyData.os" value="linux" id="linux-os">
-    <label for="linux-os">Linux</label></br>
+    <label for="linux-os">Linux</label><br/>
 
     <input type="radio" v-model="surveyData.os" value="other" id="other-os">
-    <label for="other-os">Other
+    <label for="other-os">Other operating system
       <input v-if="surveyData.os == 'other'" v-model="surveyData.osOther" placeholder="please specify">
     </label>
 
 
 
-    <h2>Did you use headphones to complete this experiment?</h2>
-    <input type="radio" v-model="surveyData.headphones" value="yes" id="yes-headphones">
-    <label for="yes-headphones">Yes</label><br/>
+    <h3>What type of headphones did you use to complete the tongue-twister task?</h3>
+    <input type="radio" v-model="surveyData.headphones" value="bt" id="bt-headphones">
+    <label for="bt-headphones">Bluetooth headphones</label><br/>
+
+    <input type="radio" v-model="surveyData.headphones" value="wired" id="wired-headphones">
+    <label for="wired-headphones">Wired headphones</label><br/>
 
     <input type="radio" v-model="surveyData.headphones" value="no" id="no-headphones">
-    <label for="no-headphones">No</label>
+    <label for="no-headphones">I did not use any headphones</label>
 
-    <div v-if="surveyData.headphones === 'yes'">
-      <h2>When recording your voice, which microphone did you use?</h2>
+    <h3>When recording your voice today, which microphone did you use?</h3>
 
-      <input type="radio" v-model="surveyData.mic_type" value="headphones" id="headphones-mic">
-      <label for="headphones-mic">Headphone microphone</label><br/>
+    <input type="radio" v-model="surveyData.mic_type" value="built-in" id="builtin-mic">
+    <label for="builtin-mic">Computer's built-in microphone</label><br/>
 
-      <input type="radio" v-model="surveyData.mic_type" value="built-in" id="builtin-mic">
-      <label for="builtin-mic">Computer's built-in microphone</label>
+    <input type="radio" v-model="surveyData.mic_type" value="headphones" id="headphones-mic">
+    <label for="headphones-mic">Headphone microphone</label><br/>
+
+    <input type="radio" v-model="surveyData.mic_type" value="other-usb" id="other-usb-mic">
+    <label for="other-usb-mic">Other wired/USB microphone</label><br/>
+
+    <input type="radio" v-model="surveyData.mic_type" value="other-wireless" id="other-wireless-mic">
+    <label for="other-wireless-mic">Other wireless microphone</label>
+
+    <h2>Sleep</h2>
+
+    <h3>How many hours of sleep did you get last night?</h3>
+
+    <number-input-validated after="hours"
+      v-model.number="surveyData.lastNightSleep"
+      input-id="surveyData.lastNightSleep"
+      @error-catch="updateFormErrors"></number-input-validated>
+
+    <div v-if="day == 1">
+
+      <h3>Sleep Timing Questionnaire (STQ)</h3>
+
+      <p>This questionnaire asks about when you normally sleep. We are interested
+        in getting as accurate a picture as we can of the times when you normally
+        go to bed and get up. Please think carefully before giving your answers
+        and be as specific as you can be. Please answer in terms of a recent
+        “normal average week,” not one in which you traveled, vacationed, or had
+        family crises.</p>
+      <p>Please think of GOOD NIGHT TIME as the time at which you are finally in
+        bed and trying to fall asleep.</p>
+
+      <time-input-validated
+        superla = "earliest"
+        good = "night"
+        before = "work day or school day"
+        v-model="stq.gn_weekday_earliest"
+				input-id="stq.gn_weekday_earliest"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <time-input-validated
+        superla = "latest"
+        good = "night"
+        before = "work day or school day"
+        v-model="stq.gn_weekday_latest"
+				input-id="stq.gn_weekday_latest"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <time-input-validated
+        superla = "usual"
+        good = "night"
+        before = "work day or school day"
+        v-model="stq.gn_weekday_usual"
+				input-id="stq.gn_weekday_usual"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <p>How stable (i.e., similar each night) are your GOOD NIGHT TIMES on a
+        night before a work day or school day? (choose one)</p>
+
+      <radio-button-question
+          v-model="stq.gn_weekday_similar"
+          group-id="stq.gn_weekday_similar"
+          @error-catch="updateFormErrors"
+      ></radio-button-question>
+
+      <!-- good night before weekend -->
+      <time-input-validated
+        superla = "earliest"
+        good = "night"
+        before = "day off (e.g., a weekend)"
+        v-model="stq.gn_weekend_earliest"
+				input-id="stq.gn_weekend_earliest"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <time-input-validated
+        superla = "latest"
+        good = "night"
+        before = "day off (e.g., a weekend)"
+        v-model="stq.gn_weekend_latest"
+				input-id="stq.gn_weekend_latest"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <time-input-validated
+        superla = "usual"
+        good = "night"
+        before = "day off (e.g., a weekend)"
+        v-model="stq.gn_weekend_usual"
+				input-id="stq.gn_weekend_usual"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <p>How stable (i.e., similar each night) are your GOOD NIGHT TIMES on a
+        night before a day off (e.g., a weekend)? (choose one)</p>
+
+      <radio-button-question
+          v-model="stq.gn_weekend_similar"
+          group-id="stq.gn_weekend_similar"
+          @error-catch="updateFormErrors"
+      ></radio-button-question>
+
+
+      <!-- good morning -->
+      <p>Please think of GOOD MORNING TIME as the time at which you finally get
+        out of bed and start your day.</p>
+
+      <time-input-validated
+        superla = "earliest"
+        good = "morning"
+        before = "work day or school day"
+        v-model="stq.gm_weekday_earliest"
+				input-id="stq.gm_weekday_earliest"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <time-input-validated
+        superla = "latest"
+        good = "morning"
+        before = "work day or school day"
+        v-model="stq.gm_weekday_latest"
+				input-id="stq.gm_weekday_latest"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <time-input-validated
+        superla = "usual"
+        good = "morning"
+        before = "work day or school day"
+        v-model="stq.gm_weekday_usual"
+				input-id="stq.gm_weekday_usual"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <p>How stable (i.e., similar each night) are your GOOD MORNING TIMES
+        before a work day or school day? (choose one)</p>
+
+      <radio-button-question
+          v-model="stq.gm_weekday_similar"
+          group-id="stq.gm_weekday_similar"
+          @error-catch="updateFormErrors"
+      ></radio-button-question>
+
+      <!-- good morning before weekend -->
+      <time-input-validated
+        superla = "earliest"
+        good = "morning"
+        before = "day off (e.g., a weekend)"
+        v-model="stq.gm_weekend_earliest"
+				input-id="stq.gm_weekend_earliest"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <time-input-validated
+        superla = "latest"
+        good = "morning"
+        before = "day off (e.g., a weekend)"
+        v-model="stq.gm_weekend_latest"
+				input-id="stq.gm_weekend_latest"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <time-input-validated
+        superla = "usual"
+        good = "morning"
+        before = "day off (e.g., a weekend)"
+        v-model="stq.gm_weekend_usual"
+				input-id="stq.gm_weekend_usual"
+        @error-catch="updateFormErrors"
+      ></time-input-validated>
+
+      <p>How stable (i.e., similar each night) are your GOOD MORNING TIMES
+        before a day off (e.g., a weekend)? (choose one)</p>
+
+      <radio-button-question
+          v-model="stq.gm_weekend_similar"
+          group-id="stq.gm_weekend_similar"
+          @error-catch="updateFormErrors"
+      ></radio-button-question>
+
+      <p>These questions are about how much sleep you use to unwanted wakefulness:</p>
+
+      <p>On most nights, how long, on average does it take you to fall asleep after you start trying?</p>
+      <number-input-validated
+        after="minutes"
+        v-model.number="stq.fall_asleep_try"
+        input-id="stq.fall_asleep_try"
+        max-val="infinity"
+        @error-catch="updateFormErrors">
+      </number-input-validated>
+
+      <p>On most nights, how much sleep do you lose, on average, from waking up during the night (e.g. to go to the bathroom)?</p>
+      <number-input-validated
+        after="minutes"
+        v-model.number="stq.waking_loss"
+        input-id="stq.waking_loss"
+        max-val="infinity"
+        @error-catch="updateFormErrors">
+      </number-input-validated>
     </div>
 
-    <div v-if="surveyData.mic_type === 'headphones'">
-      <h2>Are your headphones wired or wireless/Bluetooth?</h2>
+    <hr/>
 
-      <input type="radio" v-model="surveyData.mic_wired" value="wired" id="wired-mic">
-      <label for="wired-mic">Wired</label><br/>
-
-      <input type="radio" v-model="surveyData.mic_wired" value="bt" id="bt-mic">
-      <label for="bt-mic">Wireless/Bluetooth</label>
-    </div>
-
-    <h2>Is there anything else you'd like us to know about your experience? (optional)</h2>
+    <h3>Is there anything else you'd like us to know about your experience? (optional)</h3>
     <textarea v-model="surveyData.anything_else"></textarea>
 
-    <button v-on:click="submitSurvey" v-if="surveyData.browser != null && surveyData.os != null && (surveyData.headphones == 'no' || surveyData.mic_type == 'built-in' || surveyData.mic_wired !== null)">
+    <button v-on:click="submitSurvey" v-if="
+        surveyData.browser != null
+        && (surveyData.browser != 'other' || (surveyData.browserOther != null && surveyData.browserOther != ''))
+        && surveyData.os != null
+        && (surveyData.os != 'other' || (surveyData.osOther != null && surveyData.osOther != ''))
+        && surveyData.headphones != null
+        && surveyData.mic_type != null
+        && perfectFormState === true">
       submit answers
+    </button>
+    <button v-else class="unclickable">
+      please answer all required questions to continue
     </button>
 
   </div>
 
-  <p v-if="expOver">Your response has been successfully submitted. Thank you for taking part in our experiment!</p>
+  <p v-if="expOver">Your response has been successfully submitted. Thank you for taking part in our experiment! Please click here to get credit.</p>
+  <p v-if="expOver & day != 4">You will be added to the eligibility pool for tomorrow's session on Prolific shortly. Please check back after {{ timeRemainingString }}.</p>
+</div>
 </div>
 
-<!-- other external libraries used -->
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pizzicato/0.6.1/Pizzicato.min.js"></script>
+<!-- libraries -->
+<script type="text/javascript" src="./src/lib/vue.min.js"></script>
+<script type="text/javascript" src="./src/lib/Pizzicato_0_6_1.min.js"></script>
+<script type="text/javascript" src="./src/lib/papaparse.min.js"></script>
+<script type="text/javascript" src="./src/lib/recorder.js"></script>
+<script type="text/javascript" src="./src/lib/FileSaver.js"></script>
 
-<!-- same-source scripts -->
-<script type="text/javascript" src="./papaparse.min.js"></script>
-<script type="text/javascript" src="./recorder.js"></script>
-<script type="text/javascript" src="./FileSaver.js"></script>
-
-<!-- firebase -->
-<script src="https://www.gstatic.com/firebasejs/7.14.3/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-storage.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-database.js"></script>
-
+<!-- firebase includes -->
+<script type="text/javascript" src="./src/firebase/firebase-app-7-22-1.js"></script>
+<script type="text/javascript" src="./src/firebase/firebase-database-7-22-1.js"></script>
+<script type="text/javascript" src="./src/firebase/firebase-storage-7-22-1.js"></script>
 
 <script src="/__/firebase/init.js"></script>
 
-<script type="text/javascript" src="main.js"></script>
+<script type="text/javascript" src="./src/main.js"></script>
 
 </body>
 </html>

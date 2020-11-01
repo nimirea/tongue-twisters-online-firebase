@@ -17,7 +17,7 @@ h1 {
   font-family: 'Roboto Slab', 'Helvetica', 'Arial', sans-serif;
 }
 
-p, button {
+p, button, li, label {
   font-size: 1.15rem;
 }
 
@@ -43,8 +43,12 @@ button {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.stim p {
-  font-size:1.75rem;
+.stim p, .stim button {
+  font-size:2rem;
+}
+.fixcross {
+  vertical-align: middle;
+  height: 2rem;
 }
 
 .rec-symbols {
@@ -57,12 +61,34 @@ button {
 .green { background-color: green; }
 .red { background-color: red; }
 .blue { background-color: blue; }
+.unclickable {
+  background-color: lightgray;
+  border: 1px dashed black;
+  color:black;
+  cursor: not-allowed;
+}
 span.red, span.blue, span.light-green {
   display: inline-block;
   padding: 0.25rem;
 }
 span.red, span.blue {
   color: white;
+}
+.italic {
+  font-style: italic;
+}
+.normal-weight {
+  font-weight: 400;
+}
+
+/* some elements just exist to take up space */
+.invisible {
+  background-color: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+.invisible:focus {
+  outline: 0;
 }
 
 .recording-bar {
@@ -78,8 +104,56 @@ span.red, span.blue {
   background-color: red;
 }
 
+/* form styling */
 textarea {
   margin-bottom:1rem;
   width:100%;
   min-height:5rem;
+}
+
+input, textarea {
+  font-size: 1rem;
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.45;
+}
+
+select {
+  font-size:1rem;
+  line-height: 1.45;
+}
+
+.flex-contain {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.flex-contain input {
+  flex-shrink: 0;
+}
+.flex-contain label {
+  padding-left: 1rem;
+}
+.short-input { /* for numbers */
+  width: 3rem;
+}
+
+.survey-error {
+  color: red;
+}
+.survey-error li:before {
+  content: '\2716';
+  margin-left: -1.5rem;
+  margin-right: .75rem;
+}
+ul.survey-error {
+  list-style-type: none;
+}
+
+hr {
+  border: 0;
+      border-bottom-color: currentcolor;
+      border-bottom-style: none;
+      border-bottom-width: 0px;
+  border-bottom: 1px dashed #ccc;
+  background: black;
 }

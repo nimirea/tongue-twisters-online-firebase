@@ -1,0 +1,15 @@
+{
+  "name": "speech-experiments",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "babel src-uncompiled -d src"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5"
+  }
+}

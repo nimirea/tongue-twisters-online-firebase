@@ -377,7 +377,8 @@ var app = new Vue({
     minsRemaining: null,
     timingCorrect: null, // whether the timing is correct or not (set based on minsRemaining, possible values are early, just right)
     prevDayIncomplete: false, // did the participant complete the previous day?
-    alreadyDone: false // did the participant already complete THIS day?
+    alreadyDone: false, // did the participant already complete THIS day?
+    browserOutdated: false
   },
   methods : {
 		//get timestamp of consent & upload sequence data to database
@@ -696,23 +697,32 @@ var app = new Vue({
 
   },
   created: function(){
-		// getting participant ID from URL
-		var urlParams = new URLSearchParams(window.location.search);
-		this.participant_id = urlParams.get('PROLIFIC_PID');
-    this.test_mode = (urlParams.get('TEST_MODE') === 'yes');
-    this.day = Number(urlParams.get('day'));
+    // check if user is using IE
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE ");
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+      this.browserOutdated = true;
+    }
 
-    // find out if the timestamp of previous day is correct
-    var db = firebase.database();
+    if (this.browserOutdated === false) {
 
-    // check if participant completed the correct number of days
-    db.ref(this.participant_id + '/lastDayCompleted').once('value')
-      .then((snapshot_ldc) => {
-        if (snapshot_ldc.val() >= this.day) {
-          this.alreadyDone = true;
-        } else if (snapshot_ldc.val() != this.day - 1) {
-          this.prevDayIncomplete = true;
-        }})
+      // getting participant ID from URL
+      var urlParams = new URLSearchParams(window.location.search);
+      this.participant_id = urlParams.get('PROLIFIC_PID');
+      this.test_mode = (urlParams.get('TEST_MODE') === 'yes');
+      this.day = Number(urlParams.get('day'));
+
+      // find out if the timestamp of previous day is correct
+      var db = firebase.database();
+
+      // check if participant completed the correct number of days
+      db.ref(this.participant_id + '/lastDayCompleted').once('value')
+        .then((snapshot_ldc) => {
+          if (snapshot_ldc.val() >= this.day) {
+            this.alreadyDone = true;
+          } else if (snapshot_ldc.val() != this.day - 1) {
+            this.prevDayIncomplete = true;
+          }})
 
 
 
@@ -735,97 +745,98 @@ var app = new Vue({
         }
       }
 
-    // set experimental condition randomly
-    db.ref(this.participant_id + '/expCond').once('value')
-    .then((snapshot_expCond) => {
-      if (snapshot_expCond.val() === null) {
-        this.exp_cond = pick_random(["onset", "coda"]);
-      } else {
-        this.exp_cond = snapshot_expCond.val();
-      }
-
-      console.log(this.exp_cond);
-    })
-
-    // set counterbalancing condition
-    db.ref(this.participant_id + '/cbCond').once('value')
-      .then((snapshot_cbCond) => {
-        // set randomly if not there
-        if (snapshot_cbCond.val() === null) {
-          this.cb_cond = pick_random(["AE->F; IH->S", "AE->S; IH->F"]);
+      // set experimental condition randomly
+      db.ref(this.participant_id + '/expCond').once('value')
+      .then((snapshot_expCond) => {
+        if (snapshot_expCond.val() === null) {
+          this.exp_cond = pick_random(["onset", "coda"]);
         } else {
-          this.cb_cond = snapshot_cbCond.val();
+          this.exp_cond = snapshot_expCond.val();
         }
 
-        console.log(this.cb_cond)
-      }).then(() => {
+        console.log(this.exp_cond);
+      })
 
-        // get stimuli from CSV file
-        var stim_file = './stimuli.csv'
-        if (this.test_mode) {
-          stim_file = './stimuli-small.csv';
-        }
+      // set counterbalancing condition
+      db.ref(this.participant_id + '/cbCond').once('value')
+        .then((snapshot_cbCond) => {
+          // set randomly if not there
+          if (snapshot_cbCond.val() === null) {
+            this.cb_cond = pick_random(["AE->F; IH->S", "AE->S; IH->F"]);
+          } else {
+            this.cb_cond = snapshot_cbCond.val();
+          }
 
-        fetch(stim_file)
-          .then(response => response.text())
-          .then(data => {
-            this.stimList = Papa.parse(data, {
-                'header': true,
-                'skipEmptyLines': true,
-                'columns': ['stim_id', 'cb_cond', 'exp_cond', 'exp_idx', 'twister']
-            }).data;
+          console.log(this.cb_cond)
+        }).then(() => {
 
-            // filter by day and conditions
-            this.stimList = this.stimList.filter(item => {
+          // get stimuli from CSV file
+          var stim_file = './stimuli.csv'
+          if (this.test_mode) {
+            stim_file = './stimuli-small.csv';
+          }
 
-              var right_day = true;
+          fetch(stim_file)
+            .then(response => response.text())
+            .then(data => {
+              this.stimList = Papa.parse(data, {
+                  'header': true,
+                  'skipEmptyLines': true,
+                  'columns': ['stim_id', 'cb_cond', 'exp_cond', 'exp_idx', 'twister']
+              }).data;
 
-              if (this.day <= 2) {
-                right_day = (item.exp_idx == "1");
-              } else {
-                right_day = (item.exp_idx == "2");
-              }
+              // filter by day and conditions
+              this.stimList = this.stimList.filter(item => {
 
-              return (right_day
-                      && item.exp_cond == this.exp_cond
-                      && item.cb_cond == this.cb_cond)
+                var right_day = true;
 
-            });
-
-            // randomize stimulus list
-            shuffle(this.stimList);
-
-            if (this.day % 2 === 1) {
-              // Day 1 & 3: pick half at random
-              this.stimList = this.stimList.slice(0, this.stimList.length / 2)
-
-            } else {
-
-              // Day 2 & 4: pick whichever words weren't already picked yesterday
-              db.ref(this.participant_id + "/stimList/" + String(this.day - 1)).once('value')
-              .then((snapshot_prevStims) => {
-
-                if (snapshot_prevStims.val() === null) {
-                  console.log("Sorry! Not enough data to create stimulus list.")
-                  this.stimList = null;
+                if (this.day <= 2) {
+                  right_day = (item.exp_idx == "1");
                 } else {
-
-                  var prev_stims = snapshot_prevStims.val().map(item => {
-                    return item.stim_id
-                  });
-
-                  this.stimList = this.stimList.filter(item => {
-                    return prev_stims.includes(item.stim_id);
-                  });
-
+                  right_day = (item.exp_idx == "2");
                 }
+
+                return (right_day
+                        && item.exp_cond == this.exp_cond
+                        && item.cb_cond == this.cb_cond)
 
               });
 
-            }
+              // randomize stimulus list
+              shuffle(this.stimList);
 
-          });
+              if (this.day % 2 === 1) {
+                // Day 1 & 3: pick half at random
+                this.stimList = this.stimList.slice(0, this.stimList.length / 2)
 
-      });
+              } else {
+
+                // Day 2 & 4: pick whichever words weren't already picked yesterday
+                db.ref(this.participant_id + "/stimList/" + String(this.day - 1)).once('value')
+                .then((snapshot_prevStims) => {
+
+                  if (snapshot_prevStims.val() === null) {
+                    console.log("Sorry! Not enough data to create stimulus list.")
+                    this.stimList = null;
+                  } else {
+
+                    var prev_stims = snapshot_prevStims.val().map(item => {
+                      return item.stim_id
+                    });
+
+                    this.stimList = this.stimList.filter(item => {
+                      return prev_stims.includes(item.stim_id);
+                    });
+
+                  }
+
+                });
+
+              }
+
+            });
+
+        });
+    }
   }
 })

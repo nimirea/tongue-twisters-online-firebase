@@ -17,8 +17,14 @@
 
 <div id="app" v-cloak>
 
+  <!-- check for outdated browser -->
+  <div v-if="browserOutdated">
+    <h1>Unsupported browser</h1>
+    <p>It appears you are using an unsupported browser. Please open this page in Edge, Firefox, or Chrome to continue.</p>
+  </div>
+
   <!-- check if the day value is a valid value -->
-  <div v-if="day > 4 | Number.isNaN(day) | day < 1">
+  <div v-else-if="day > 4 | Number.isNaN(day) | day < 1">
     <h1>Invalid URL</h1>
     <p>Are you sure that you're in the right place? Please make sure you've clicked the correct link, and send a message to your experimenter if the issue persists.</p>
   </div>

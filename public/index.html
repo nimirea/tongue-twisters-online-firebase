@@ -543,8 +543,9 @@
 
   </div>
 
-  <p v-if="expOver">Your response has been successfully submitted. Thank you for taking part in our experiment! Please click here to get credit.</p>
+  <p v-if="expOver">Your response has been successfully submitted. Thank you for taking part in our experiment!</p>
   <p v-if="expOver & day != 4">You will be added to the eligibility pool for tomorrow's session on Prolific shortly. Please check back after {{ timeRemainingString }}.</p>
+  <p v-if="expOver">Please <a v-bind:href="completionURL[day - 1]">click here</a> to get credit on Prolific for today's session.</p>
 </div>
 </div>
 

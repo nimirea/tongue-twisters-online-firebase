@@ -378,7 +378,13 @@ var app = new Vue({
     timingCorrect: null, // whether the timing is correct or not (set based on minsRemaining, possible values are early, just right)
     prevDayIncomplete: false, // did the participant complete the previous day?
     alreadyDone: false, // did the participant already complete THIS day?
-    browserOutdated: false
+    browserOutdated: false,
+    completionURL: [
+      'https://app.prolific.co/submissions/complete?cc=80A5C6E2',
+      'https://app.prolific.co/submissions/complete?cc=5F194114',
+      'https://app.prolific.co/submissions/complete?cc=2C3ACBFE',
+      'https://app.prolific.co/submissions/complete?cc=79A95D43'
+    ]
   },
   methods : {
 		//get timestamp of consent & upload sequence data to database

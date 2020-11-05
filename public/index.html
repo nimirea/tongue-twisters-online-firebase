@@ -51,6 +51,16 @@
 
   <!-- consent form -->
   <div v-if="!consentGiven">
+
+    <div v-if="completionErrors != false">
+      <h1>Sorry!</h1>
+      <p>Unfortunately, we could not record your data. If you'd like to get
+        credit for this experiment, you will need to complete the session.</p>
+      <p>If you believe you received this message in error, please contact
+        your experimenter.</p>
+      <hr/>
+    </div>
+
     <h1>Consent to Participate in Research (Day {{ day }})</h1>
 
     <h2>Title of Research Study: <span class="italic">Tongue-Twisters Across Multiple Days</span></h2>
@@ -253,7 +263,6 @@
           {{ stimList[currentStim]['twister'] }}
       </p>
       <p v-else>
-        <!-- TODO put fixation cross image here -->
         <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
       </p>
       <button v-on:click="nextTrial" v-if="trialEnded">next</button>
@@ -543,9 +552,12 @@
 
   </div>
 
-  <p v-if="expOver">Your response has been successfully submitted. Thank you for taking part in our experiment!</p>
-  <p v-if="expOver & day != 4">You will be added to the eligibility pool for tomorrow's session on Prolific shortly. Please check back after {{ timeRemainingString }}.</p>
-  <p v-if="expOver">Please <a v-bind:href="completionURL[day - 1]">click here</a> to get credit on Prolific for today's session.</p>
+  <!-- experiment over -->
+  <div v-if="expOver">
+    <p>Your response has been successfully submitted. Thank you for taking part in our experiment!</p>
+    <p v-if="day != 4">You will be added to the eligibility pool for tomorrow's session on Prolific shortly. Please check back after {{ timeRemainingString }}.</p>
+    <p>Please <a v-bind:href="completionURL">click here</a> to get credit on Prolific for today's session.</p>
+  </div>
 </div>
 </div>
 
@@ -562,7 +574,7 @@
 <script src="/__/firebase/8.0.0/firebase-functions.js"></script>
 <script src="/__/firebase/8.0.0/firebase-storage.js"></script>
 
-<script src="/__/firebase/init.js"></script>
+<script src="/__/firebase/init.js?useEmulator=true"></script>
 
 <script type="text/javascript" src="./src/main.js"></script>
 

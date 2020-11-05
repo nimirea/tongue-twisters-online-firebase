@@ -19,6 +19,9 @@ function shuffle(array) {
   return array;
 }
 
+// Initialize Cloud Functions through Firebase
+var functions = firebase.functions();
+
 // randomly pick a variable from a list
 function pick_random(array) {
   return(array[Math.floor(Math.random() * array.length)])
@@ -379,12 +382,8 @@ var app = new Vue({
     prevDayIncomplete: false, // did the participant complete the previous day?
     alreadyDone: false, // did the participant already complete THIS day?
     browserOutdated: false,
-    completionURL: [
-      'https://app.prolific.co/submissions/complete?cc=80A5C6E2',
-      'https://app.prolific.co/submissions/complete?cc=5F194114',
-      'https://app.prolific.co/submissions/complete?cc=2C3ACBFE',
-      'https://app.prolific.co/submissions/complete?cc=79A95D43'
-    ]
+    completionURL: null,
+    completionErrors: false
   },
   methods : {
 		//get timestamp of consent & upload sequence data to database
@@ -455,14 +454,37 @@ var app = new Vue({
 
       // end the whole experiment if we're all out of tasks
       if (this.currentTask == this.taskList.length - 1) {
+        // initialized callable function
+        var cc = firebase.functions().httpsCallable('checkCompletion');
 
         // push 'completed' tag up to server
         var db = firebase.database();
-        db.ref(this.participant_id + "/lastDayCompleted").set(this.day).then(() => {
-          this.updateTimeRemaining(this.day, () => {
-            this.expOver = true; // update view
+
+        cc({
+            participant_id: this.participant_id,
+            day: this.day
+          })
+        .then((res) =>
+          {
+            res = res.data;
+            if (res.is_incomplete === 0) {
+
+              this.completionURL = res.message;
+              db.ref(this.participant_id + "/lastDayCompleted").set(this.day)
+              .then(() => {
+                this.updateTimeRemaining(this.day, () => {
+                  this.expOver = true; // update view
+                });
+              })
+
+            } else {
+              this.completionErrors = res.message;
+
+              // reset the experiment!
+              this.consentGiven = false;
+              this.currentTask = 0;
+            }
           });
-        });
 
       } else {
         // advance to next task
@@ -759,8 +781,6 @@ var app = new Vue({
         } else {
           this.exp_cond = snapshot_expCond.val();
         }
-
-        console.log(this.exp_cond);
       })
 
       // set counterbalancing condition
@@ -772,8 +792,6 @@ var app = new Vue({
           } else {
             this.cb_cond = snapshot_cbCond.val();
           }
-
-          console.log(this.cb_cond)
         }).then(() => {
 
           // get stimuli from CSV file

@@ -2,7 +2,7 @@
   "name": "speech-experiments",
   "version": "1.0.0",
   "scripts": {
-    "build:js": "babel src-uncompiled -d src"
+    "build:js": "babel src-uncompiled -d src",
     "watch:js": "onchange 'src-uncompiled/*.js' -- npm run build:js"
   },
   "devDependencies": {

@@ -40,7 +40,7 @@ exports.checkCompletion = functions.https.onCall((data) => {
 
     let db_data = snapshot.val();
 
-    if (db_data == null) {
+    if (db_data === null) {
       result_value.message.push("No data in database for this user.")
     } else {
 
@@ -56,9 +56,6 @@ exports.checkCompletion = functions.https.onCall((data) => {
 
     }
 
-    // NOTE: don't need to check for STQ, since it's submitted in the same go as the survey
-
-  }).then(() => {
     if (result_value.message.length > 0) {
       result_value.is_incomplete = 1;
     } else {
@@ -95,7 +92,7 @@ exports.calcCompletionStatus = functions.https.onCall((data) => {
     .then((snapshot_ldc) => {
       if (snapshot_ldc.val() >= data.day) {
         result_value.alreadyDone = true;
-      } else if (snapshot_ldc.val() != data.day - 1) {
+      } else if (snapshot_ldc.val() !== data.day - 1) {
         result_value.prevDayIncomplete = true;
       }
 
@@ -184,7 +181,7 @@ exports.getParticipantConds = functions.https.onCall((participant_id) => {
             exp_opts
           );
         }
-        
+
         return result_value
       })
     }
@@ -207,7 +204,7 @@ exports.getStims = functions.https.onCall((data) => {
     return db.ref(data.participant_id + "/stimList/" + data.day).once('value')
       .then((snapshot_prevStims) => {
 
-        if (snapshot_prevStims.val() === null) {
+        if (!snapshot_prevStims.exists()) {
           return null
         } else {
           return snapshot_prevStims.val().map(item => {

@@ -9,7 +9,7 @@
   </style>
 
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-  <link href="./style.css" rel="stylesheet" type="text/css" />
+  <link href="./style.css?version=3" rel="stylesheet" type="text/css" />
 
 </head>
 <body>
@@ -178,62 +178,189 @@
 
   <!-- mic check -->
   <div v-if="consentGiven & !expOver & taskList[currentTask].name == 'mic_check'">
-    <h1>Task {{currentTask + 1}} of {{taskList.length}}: Microphone Test</h1>
-    <p>We will need to record your voice during this experiment, so
-      at this time, we'd like you to check that your microphone is properly placed.
-    </p>
-    <p>Important notes:
-    </p>
-    <ul>
-      <li>Please perform this microphone check (and the rest of this 1-hour experiment)
-          <b>in a quiet place</b>, with no distractions.</li>
-      <li>You will need headphones for the rest of the experiment.
-        <b>If you are using Bluetooth headphones that have a microphone,
-      please DO NOT use your Bluetooth headphones to record! Use your computer's
-      built-in microphone (or a pair of wired headphones, if you have them) instead.</b> This will ensure
-      that we can record stable audio throughout the session. <b>You will need to change your
-      default sound input settings <i>before</i> performing this test; here are
-      instructions on how to do this on
-      <a href="https://brentsaltzman.com/set-microphone-level-windows-10/">
-      Windows 10</a>, <a href="https://brentsaltzman.com/set-microphone-level-windows-7/">Windows 7</a>, and
-      <a href="https://support.apple.com/guide/mac-help/change-the-sound-input-settings-mchlp2567/mac">
-      Mac</a>.
-      </b>
-      <li>Please <b>do NOT refresh the page</b> at any point during this experiment.</li>
-    </ul>
-    <p>
-      When your microphone is configured correctly and you are in a quiet place, please press the button below, and then start speaking at a
-      comfortable volume.
-      Adjust the position of your microphone so that the bar at the bottom of the screen
-      is in the "just right" <span class="light-green">(green)</span> range whenever you are speaking,
-      and as far to the left as possible when you are not.
-      This test will not be stored.
-    </p>
-    <p>
-      (Note: whenever your microphone is active during this experiment, you will
-      see a <span class="red">red</span> "recording" bar at the top of your
-      screen.)
-    </p>
-    <button v-on:click="startTask" v-if="!isRecording"><span class="rec-symbols">&#x25cf;</span> start test</button>
-    <button v-on:click="stopTask" v-if="isRecording"><span class="rec-symbols">&#9632;</span> stop test and continue</button>
+    <h1>Task {{currentTask + 1}} of {{taskList.length}}: Equipment Setup</h1>
 
-    <!--volume feedback-->
-    <p style="text-align:center;">&nbsp;<span v-if="isRecording">{{ soundbar.message }}</span></p>
-    <!-- volume meter  -->
-    <div
-      style="width:100%;height:0.75rem;border:1px solid black; z-index:1"
-      v-bind:style="{'background':'linear-gradient(90deg, rgba(0,0,0,1)' +  soundbar.width + '%, rgba(255,255,255,0) ' +  soundbar.width + '%)'}">
-      <!-- range marker -->
-      <div
-        v-bind:style="{'width': soundbar.cutoffs.high - soundbar.cutoffs.low + '%', marginLeft: soundbar.cutoffs.low + '%'}"
-        style="background-color: rgb(100, 250, 100); height:2rem; position:relative; top: -0.625rem; z-index: -1"></div>
+    <p>
+      Welcome! In this part of the session, we'll be setting up your equipment
+      for the experiment.
+    </p>
+
+    <p>
+      Important: please DO <b>NOT</b> use the back button or
+      refresh the study at any point during this experiment—you will lose your
+      place!
+    </p>
+
+    <button
+      v-on:click="taskList[currentTask].data.setupConfirm = 'confirmed';"
+      v-bind:class="{
+                      active: taskList[currentTask].data.setupConfirm == 'confirmed'
+                    }"
+    >I understand this, and I'm ready to get set up.</button>
+
+    <div v-if="taskList[currentTask].data.setupConfirm == 'confirmed'">
+    <p>You will need headphones for this experiment. Please connect them now,
+      and make sure you are in a quiet place where you won't be disturbed for
+      about one hour.</p>
+
+    <p>First: are your headphones wired or wireless?</p>
+
+    <div class = "buttonbox">
+      <button
+        v-on:click="taskList[currentTask].data.headphoneType = 'wired'"
+        v-bind:class="{
+                        active: taskList[currentTask].data.headphoneType == 'wired',
+                        inactive: taskList[currentTask].data.headphoneType != 'wired' && taskList[currentTask].data.headphoneType != null
+                      }"
+      >wired</button>
+      <button
+        v-on:click="taskList[currentTask].data.headphoneType = 'wireless'"
+        v-bind:class="{
+                        active: taskList[currentTask].data.headphoneType == 'wireless',
+                        inactive: taskList[currentTask].data.headphoneType != 'wireless' && taskList[currentTask].data.headphoneType != null
+                      }"
+      >wireless</button>
     </div>
+
+    <div v-if="taskList[currentTask].data.headphoneType != null">
+      <p>We will need to record your voice during this experiment.</p>
+      <p>Do your headphones have a microphone on them?</p>
+
+      <div class = "buttonbox">
+        <button
+          v-on:click="taskList[currentTask].data.headphoneMic = 'yes'"
+          v-bind:class="{
+                          active: taskList[currentTask].data.headphoneMic == 'yes',
+                          inactive: taskList[currentTask].data.headphoneMic != 'yes' && taskList[currentTask].data.headphoneMic != null
+                        }"
+        >yes</button>
+        <button
+          v-on:click="taskList[currentTask].data.headphoneMic = 'no'"
+          v-bind:class="{
+                          active: taskList[currentTask].data.headphoneMic == 'no',
+                          inactive: taskList[currentTask].data.headphoneMic != 'no' && taskList[currentTask].data.headphoneMic != null
+                        }"
+        >no</button>
+      </div>
+
+      <div v-if="taskList[currentTask].data.headphoneMic == 'yes' &&
+                taskList[currentTask].data.headphoneType == 'wireless'
+      ">
+        <p>To ensure that we can record stable audio throughout the session,
+          we ask that you <b>DO NOT</b> use the microphone on your Bluetooth
+          headphones for this experiment. Instead, please use your computer's
+          built-in microphone or a standalone USB microphone,
+          if you have one available.
+        </p>
+
+        <p>Which microphone will you be using today?</p>
+
+        <div class = "buttonbox">
+          <button
+            v-on:click="taskList[currentTask].data.micType = 'computer\'s built-in microphone'"
+            v-bind:class="{
+                            active: taskList[currentTask].data.micType == 'computer\'s built-in microphone',
+                            inactive: taskList[currentTask].data.micType != 'computer\'s built-in microphone' && taskList[currentTask].data.micType != null
+                          }"
+          >computer's built-in microphone</button>
+          <button
+            v-on:click="taskList[currentTask].data.micType = 'standalone USB microphone'"
+            v-bind:class="{
+                            active: taskList[currentTask].data.micType == 'standalone USB microphone',
+                            inactive: taskList[currentTask].data.micType != 'standalone USB microphone' && taskList[currentTask].data.micType != null
+                          }"
+          >standalone USB microphone</button>
+        </div>
+
+        <div v-if="taskList[currentTask].data.micType != null">
+
+          <p>
+            At this time, please make sure your computer's default sound input
+            device is set to your {{ taskList[currentTask].data.micType }}, and <b>NOT</b> your Bluetooth headphones.
+            Here are instructions on how to do this on
+            <a href="https://brentsaltzman.com/set-microphone-level-windows-10/">
+        Windows 10</a>, <a href="https://brentsaltzman.com/set-microphone-level-windows-7/">
+          Windows 7</a>, and
+          <a href="https://support.apple.com/guide/mac-help/change-the-sound-input-settings-mchlp2567/mac">
+        Mac</a>.
+          </p>
+
+          <p>Once you have done so, click the button below to confirm:</p>
+
+
+            <button
+              v-on:click="taskList[currentTask].data.inputStatus = 'confirmed'"
+              v-bind:class="{
+                              active: taskList[currentTask].data.inputStatus == 'confirmed'
+                            }"
+            >My default sound input is correctly configured</button>
+
+        </div>
+
+
+        </div>
+
+    </div>
+
+    <div v-if="(taskList[currentTask].data.headphoneType == 'wired' &&
+                taskList[currentTask].data.headphoneMic == 'yes') ||
+              taskList[currentTask].data.headphoneMic == 'no' ||
+              taskList[currentTask].data.inputStatus == 'confirmed'">
+      <p>Now we'd to check that
+        <span v-if="taskList[currentTask].data.micType != null">
+          your {{ taskList[currentTask].data.micType }}
+        </span>
+        <span v-else>
+          the microphone you'll be using
+          <span v-if="taskList[currentTask].data.headphoneMic == 'no'">
+            (either your computer's built-in microphone, or a standalone USB microphone)
+          </span>
+          <span v-else-if="(taskList[currentTask].data.headphoneType == 'wired' &&
+                      taskList[currentTask].data.headphoneMic == 'yes')">
+            (either the microphone on your
+            headphones, your computer's built-in microphone, or a standalone USB
+            microphone)
+          </span>
+      </span>
+      is properly placed.</p>
+
+        <p>
+          When you are ready, please press the button below, and then start speaking at a
+          comfortable volume.
+          Adjust the position of your microphone so that the bar at the bottom of the screen
+          is in the "just right" <span class="light-green">(green)</span> range whenever you are speaking,
+          and as far to the left as possible when you are not.
+          This test will not be stored.
+        </p>
+        <p>
+          (Note: whenever your microphone is active during this experiment, you will
+          see a <span class="red">red</span> "recording" bar at the top of your
+          screen.)
+        </p>
+        <button v-on:click="startTask" v-if="!isRecording"><span class="rec-symbols">&#x25cf;</span> start test</button>
+        <button v-on:click="stopTask" v-if="isRecording"><span class="rec-symbols">&#9632;</span> stop test and continue</button>
+
+        <!--volume feedback-->
+        <p style="text-align:center;">&nbsp;<span v-if="isRecording">{{ soundbar.message }}</span></p>
+        <!-- volume meter  -->
+        <div
+          style="width:100%;height:0.75rem;border:1px solid black; z-index:1"
+          v-bind:style="{'background':'linear-gradient(90deg, rgba(0,0,0,1)' +  soundbar.width + '%, rgba(255,255,255,0) ' +  soundbar.width + '%)'}">
+          <!-- range marker -->
+          <div
+            v-bind:style="{'width': soundbar.cutoffs.high - soundbar.cutoffs.low + '%', marginLeft: soundbar.cutoffs.low + '%'}"
+            style="background-color: rgb(100, 250, 100); height:2rem; position:relative; top: -0.625rem; z-index: -1"></div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
   <!-- main experiment flow (tongue-twisters) -->
   <div v-if="consentGiven && !expOver && taskList[currentTask].name == 'TT'">
     <div v-if="!isStarted">
-      <h1>Task {{currentTask + 1}} of {{taskList.length}}</h1>
+      <h1>Task {{currentTask + 1}} of {{taskList.length}}: Tongue-Twister Task</h1>
       <p>
         We will now ask you to read some tongue-twisters to the beat of a
         metronome. You will see a single tongue-twister appear on the screen,

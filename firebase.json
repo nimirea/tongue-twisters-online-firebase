@@ -22,16 +22,16 @@
   },
   "emulators": {
     "firestore": {
-      "port": 8080
+      "port": 8088
     },
     "hosting": {
-      "port": 5000
+      "port": 5002
     },
     "functions": {
-      "port": 5001
+      "port": 5003
     },
     "database": {
-      "port": 9000
+      "port": 9005
     },
     "ui": {
       "enabled": true

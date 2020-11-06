@@ -346,7 +346,14 @@ var app = new Vue({
     ],
     taskList: [ // tasks, in order
       {
-        name: 'mic_check'
+        name: 'mic_check',
+        data: {
+          headphoneType: null,
+          headphoneMic: null,
+          micType: null,
+          inputStatus: null,
+          setupConfirm: null
+        }
       },
       {
         name: 'TT',

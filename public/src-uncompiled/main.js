@@ -741,38 +741,38 @@ var app = new Vue({
       this.test_mode = (urlParams.get('TEST_MODE') === 'yes');
       this.day = Number(urlParams.get('day'));
 
-      // find out if the timestamp of previous day is correct
-      var db = firebase.database();
+      // determine whether participant has arrived at the right time,
+      // based on whether they've
+      var ccs = firebase.functions().httpsCallable('calcCompletionStatus');
+      ccs({
+        'participant_id': this.participant_id,
+        'day': this.day
+      }).then((res) => {
+        this.prevDayIncomplete = res.data.prevDayIncomplete;
+        this.alreadyDone = res.data.alreadyDone;
 
-      // check if participant completed the correct number of days
-      db.ref(this.participant_id + '/lastDayCompleted').once('value')
-        .then((snapshot_ldc) => {
-          if (snapshot_ldc.val() >= this.day) {
-            this.alreadyDone = true;
-          } else if (snapshot_ldc.val() != this.day - 1) {
-            this.prevDayIncomplete = true;
-          }})
+        if (this.alreadyDone === false) {
+          if (this.day != 1) {
 
+            this.updateTimeRemaining(this.day - 1, () => {
 
+              // update timingCorrect dynamically
+              if (this.minsRemaining > 0) {
+                this.timingCorrect = "early";
+              } else {
+                this.timingCorrect = "just right";
+              }
 
-      if (this.prevDayIncomplete === false & this.alreadyDone === false) {
-        if (this.day != 1) {
+            });
 
-          this.updateTimeRemaining(this.day - 1, () => {
-
-            // update timingCorrect dynamically
-            if (this.minsRemaining > 0) {
-              this.timingCorrect = "early";
-            } else {
-              this.timingCorrect = "just right";
-            }
-
-          });
-
-        } else {
-          this.timingCorrect = "just right";
+          } else {
+            this.timingCorrect = "just right";
+          }
         }
-      }
+
+      })
+
+      var db = firebase.database();
 
       // set experimental condition randomly
       db.ref(this.participant_id + '/expCond').once('value')

@@ -78,15 +78,11 @@ exports.checkCompletion = functions.https.onCall((data) => {
 * (i.e., a unique integer) if no no participant_id has been provided in
 * data. This limits read access to the database by users, making it truly
 * private.
-* @param {Object} data an object containing...
-* @param {String} data.participant_id the user ID
-* @return {Promise} with a data object containing...
-*   - participant_id {String}: the modified participant ID
+* @param {String} data a participant ID or null (if none provided in URL)
+* @return {Promise} with a data {String} containing the modified participant ID
 */
 exports.setParticipantId = functions.https.onCall((data) => {
-  // variable to store result
-  // let result_value = data.participant_id;
-  console.log("initial data: " + data);
+  let result_value = data;
 
   // initialize database
   var db = admin.database();
@@ -96,8 +92,6 @@ exports.setParticipantId = functions.https.onCall((data) => {
     // replace with a unique index if no PROLIFIC_PID provided
     if (data === null) {
       result_value = snapshot.numChildren();
-    } else {
-      result_value = data;
     }
 
     return result_value;

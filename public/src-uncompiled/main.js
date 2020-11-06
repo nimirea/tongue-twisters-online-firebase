@@ -699,12 +699,21 @@ var app = new Vue({
     // usually, you will want to do something with timeRemainingString / minsRemaining afterwards, so we have a callback
     updateTimeRemaining: function(d, _callback = () => { return null }) {
 
-      var db = firebase.database();
-      db.ref(this.participant_id + '/consent').once('value').then((snapshot_consent) => {
+      var gct = firebase.functions().httpsCallable('getConsentTime');
+      gct({
+        participant_id: this.participant_id,
+        day: d
+      })
+      .then((res) => {
 
-        var lastTimestamp = snapshot_consent.val()[d];
+        var lastTimestamp = res.data;
 
-        this.minsRemaining = 1440 - Math.floor((new Date().getTime() - lastTimestamp)/(1000*60));
+        if (lastTimestamp === null) {
+          this.minsRemaining = 0
+        } else {
+          this.minsRemaining = 1440 - Math.floor((new Date().getTime() - lastTimestamp)/(1000*60));
+        }
+
         var roundedHours = Math.floor(this.minsRemaining / 60)
 
         this.timeRemainingString = roundedHours + " hours";
@@ -767,8 +776,6 @@ var app = new Vue({
 
       })
 
-      var db = firebase.database();
-
       // set experimental & counterbalancing conditions
       var gpc = firebase.functions().httpsCallable('getParticipantConds');
       gpc(this.participant_id).then((res) => {
@@ -829,7 +836,6 @@ var app = new Vue({
                     console.log("Sorry! Not enough data to create stimulus list.");
                     this.stimList = null;
                   } else {
-                    console.log(prev_stim_ids);
                     this.stimList = this.stimList.filter(item => {
                         return !(prev_stim_ids.includes(item.stim_id));
                       });

@@ -107,6 +107,31 @@ exports.calcCompletionStatus = functions.https.onCall((data) => {
 })
 
 /**
+* Gets the time of consent for a certain participant on a certain day.
+* @param {String} data an object containing...
+* @param {String} data.participant_id the participant ID
+* @param {Number} data.day the day to query
+* @return {Promise} with a data {Array} containing stim_ids of all stimuli
+*   presented on the queried day
+*/
+exports.getConsentTime = functions.https.onCall((data) => {
+
+  if (data.participant_id === null || data.day === null) {
+    return null;
+  } else {
+    return db.ref(data.participant_id + '/consent/' + data.day).once('value').then((snapshot_consent) => {
+      if (snapshot_consent.exists()) {
+        return snapshot_consent.val();
+      } else {
+        return null;
+      }
+
+    });
+  }
+
+})
+
+/**
 * Gets participant data that is persistent across sessions, if it's been set.
 * If not, return a randomly chosen one.
 * @param {String} participant_id a participant ID or null (if none provided in URL)
@@ -159,9 +184,7 @@ exports.getParticipantConds = functions.https.onCall((participant_id) => {
             exp_opts
           );
         }
-
-        console.log(result_value);
-
+        
         return result_value
       })
     }

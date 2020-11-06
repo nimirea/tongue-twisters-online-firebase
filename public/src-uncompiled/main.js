@@ -391,26 +391,27 @@ var app = new Vue({
       // update view
       this.consentGiven = true;
 
-      // upload timestamp
-			var db = firebase.database();
-      db.ref().once('value').then((snapshot) => {
-        // replace with a unique index if no PROLIFIC_PID provided
-        if (this.participant_id === null) {
-          this.participant_id = snapshot.numChildren();
-        }
-      }).then(() => {
-      // upload consent time
-	     db.ref(this.participant_id + "/consent/" + this.day).set(firebase.database.ServerValue.TIMESTAMP);
+      // set participant ID automatically if not provided
+      var spi = firebase.functions().httpsCallable('setParticipantId');
+      spi(this.participant_id)
+      .then((res) => {
 
-       // upload audio permissions
-       db.ref(this.participant_id + "/audioPermission/" + this.day).set(this.audioPermission);
+        this.participant_id = res.data;
 
-       // upload conditions (experimental & counterbalancing)
-       db.ref(this.participant_id + '/expCond').set(this.exp_cond);
-       db.ref(this.participant_id + '/cbCond').set(this.cb_cond);
+        var db = firebase.database();
+        // upload consent timestamp
+        db.ref(this.participant_id + "/consent/" + this.day).set(firebase.database.ServerValue.TIMESTAMP);
 
-       // upload stimList
-       db.ref(this.participant_id + "/stimList/" + this.day).set(this.stimList);
+        // upload audio permissions
+        db.ref(this.participant_id + "/audioPermission/" + this.day).set(this.audioPermission);
+
+        // upload conditions (experimental & counterbalancing)
+        db.ref(this.participant_id + '/expCond').set(this.exp_cond);
+        db.ref(this.participant_id + '/cbCond').set(this.cb_cond);
+
+        // upload stimList
+        db.ref(this.participant_id + "/stimList/" + this.day).set(this.stimList);
+
       });
 		},
     // function that starts the experiment
@@ -457,9 +458,6 @@ var app = new Vue({
         // initialized callable function
         var cc = firebase.functions().httpsCallable('checkCompletion');
 
-        // push 'completed' tag up to server
-        var db = firebase.database();
-
         cc({
             participant_id: this.participant_id,
             day: this.day
@@ -470,6 +468,9 @@ var app = new Vue({
             if (res.is_incomplete === 0) {
 
               this.completionURL = res.message;
+
+              // push 'completed' tag up to server
+              var db = firebase.database();
               db.ref(this.participant_id + "/lastDayCompleted").set(this.day)
               .then(() => {
                 this.updateTimeRemaining(this.day, () => {

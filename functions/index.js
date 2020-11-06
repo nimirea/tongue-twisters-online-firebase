@@ -107,6 +107,97 @@ exports.calcCompletionStatus = functions.https.onCall((data) => {
 })
 
 /**
+* Gets participant data that is persistent across sessions, if it's been set.
+* If not, return a randomly chosen one.
+* @param {String} participant_id a participant ID or null (if none provided in URL)
+* @return {Promise} with a data {Object} containing:
+*  - cb_cond {String} counterbalancing condition of participant
+*  - exp_cond {String} experimental condition of participant (onset/coda)
+*/
+exports.getParticipantConds = functions.https.onCall((participant_id) => {
+
+  // randomly pick a variable from an array
+  function pick_random(array) {
+    return(array[Math.floor(Math.random() * array.length)])
+  }
+
+  function change_if_null(received_value, possible_options) {
+    if (received_value === null) {
+      return pick_random(possible_options)
+    } else {
+      return received_value
+    }
+  }
+
+  // options for each variable
+  let cb_opts = ["AE->F; IH->S", "AE->S; IH->F"];
+  let exp_opts = ["onset", "coda"];
+
+  // set variable that will be returned (initialize with random values)
+  let result_value = {}
+
+  if (participant_id === null) {
+    result_value.cb_cond = pick_random(cb_opts);
+    result_value.exp_cond = pick_random(exp_opts);
+
+    return result_value;
+  } else {
+    return db.ref(participant_id).once('value')
+      .then((snapshot_pptData) => {
+        pptData = snapshot_pptData.val();
+
+        if (pptData === null) {
+          result_value.cb_cond = pick_random(cb_opts);
+          result_value.exp_cond = pick_random(exp_opts);
+        } else {
+          result_value.cb_cond = change_if_null(
+            pptData.cbCond,
+            cb_opts
+          );
+          result_value.exp_cond = change_if_null(
+            pptData.expCond,
+            exp_opts
+          );
+        }
+
+        console.log(result_value);
+
+        return result_value
+      })
+    }
+
+})
+
+/**
+* Gets the stimulus list that was presented on a certain day
+* @param {String} data an object containing...
+* @param {String} data.participant_id the participant ID
+* @param {Number} data.day the day to query
+* @return {Promise} with a data {Array} containing stim_ids of all stimuli
+*   presented on the queried day
+*/
+exports.getStims = functions.https.onCall((data) => {
+
+  if (data.participant_id === null || data.day === null) {
+    return null;
+  } else {
+    return db.ref(data.participant_id + "/stimList/" + data.day).once('value')
+      .then((snapshot_prevStims) => {
+
+        if (snapshot_prevStims.val() === null) {
+          return null
+        } else {
+          return snapshot_prevStims.val().map(item => {
+            return item.stim_id
+          });
+        }
+
+      });
+  }
+
+})
+
+/**
 * Sets participant ID based on the number of users in the database so far
 * (i.e., a unique integer) if no no participant_id has been provided in
 * data. This limits read access to the database by users, making it truly

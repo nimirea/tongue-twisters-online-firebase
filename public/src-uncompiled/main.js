@@ -22,11 +22,6 @@ function shuffle(array) {
 // Initialize Cloud Functions through Firebase
 var functions = firebase.functions();
 
-// randomly pick a variable from a list
-function pick_random(array) {
-  return(array[Math.floor(Math.random() * array.length)])
-}
-
 Vue.component('number-input-validated', {
   props: {
     before: String,
@@ -774,26 +769,12 @@ var app = new Vue({
 
       var db = firebase.database();
 
-      // set experimental condition randomly
-      db.ref(this.participant_id + '/expCond').once('value')
-      .then((snapshot_expCond) => {
-        if (snapshot_expCond.val() === null) {
-          this.exp_cond = pick_random(["onset", "coda"]);
-        } else {
-          this.exp_cond = snapshot_expCond.val();
-        }
-      })
+      // set experimental & counterbalancing conditions
+      var gpc = firebase.functions().httpsCallable('getParticipantConds');
+      gpc(this.participant_id).then((res) => {
 
-      // set counterbalancing condition
-      db.ref(this.participant_id + '/cbCond').once('value')
-        .then((snapshot_cbCond) => {
-          // set randomly if not there
-          if (snapshot_cbCond.val() === null) {
-            this.cb_cond = pick_random(["AE->F; IH->S", "AE->S; IH->F"]);
-          } else {
-            this.cb_cond = snapshot_cbCond.val();
-          }
-        }).then(() => {
+          this.exp_cond = res.data.exp_cond;
+          this.cb_cond = res.data.cb_cond;
 
           // get stimuli from CSV file
           var stim_file = './stimuli.csv'
@@ -837,22 +818,21 @@ var app = new Vue({
               } else {
 
                 // Day 2 & 4: pick whichever words weren't already picked yesterday
-                db.ref(this.participant_id + "/stimList/" + String(this.day - 1)).once('value')
-                .then((snapshot_prevStims) => {
+                var gs = firebase.functions().httpsCallable('getStims');
+                gs({
+                  participant_id: this.participant_id,
+                  day: this.day - 1
+                }).then((res) => {
+                  let prev_stim_ids = res.data;
 
-                  if (snapshot_prevStims.val() === null) {
-                    console.log("Sorry! Not enough data to create stimulus list.")
+                  if (prev_stim_ids === null) {
+                    console.log("Sorry! Not enough data to create stimulus list.");
                     this.stimList = null;
                   } else {
-
-                    var prev_stims = snapshot_prevStims.val().map(item => {
-                      return item.stim_id
-                    });
-
+                    console.log(prev_stim_ids);
                     this.stimList = this.stimList.filter(item => {
-                      return prev_stims.includes(item.stim_id);
-                    });
-
+                        return !(prev_stim_ids.includes(item.stim_id));
+                      });
                   }
 
                 });

@@ -369,7 +369,7 @@
         will speed up for the next 3 repetitions. Click the button below to hear/see
         an example trial for the tongue-twister "ghib ting pin diss":
       </p>
-      <button v-on:click="sampleTrial">&#9658; play example</button>
+      <button v-on:click="sampleTrial" v-bind:class="{ unclickable: sampleTrialPlaying }">&#9658; play example</button>
       <div class="example-trial">
         <div class="stim">
           <img v-bind:class="{ invisible: !sampleTrialPlaying, 'countdown-clock': clockPosition != 'top', 'countdown-clock-behind': clockPosition === 'behind' }" v-bind:src="'countdown/' + trialCountdown.state + '.png'"/>

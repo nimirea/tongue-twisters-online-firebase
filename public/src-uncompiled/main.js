@@ -419,11 +419,6 @@ var app = new Vue({
         // upload stimList
         db.ref(this.participant_id + "/stimList/" + this.day).set(this.stimList);
 
-        // don't do mic tests for test user
-        if (this.test_mode) {
-          this.currentTask = 1;
-        }
-
       });
 		},
     // function that starts the experiment
@@ -502,6 +497,9 @@ var app = new Vue({
       } else {
         // advance to next task
         this.currentTask += 1;
+
+        // scroll to top
+        window.scrollTo(0, 0);
       }
     },
 
@@ -701,43 +699,46 @@ var app = new Vue({
 
     // play sample trial
     sampleTrial: function() {
-      var sampleSound = new Pizzicato.Sound(
-  			{
-  				source:'file',
-  				options: {
-  					path: this.taskList[this.currentTask].sample_path,
-  					loop: false
-  				}
+      if (!this.sampleTrialPlaying) {
+        var sampleSound = new Pizzicato.Sound(
+    			{
+    				source:'file',
+    				options: {
+    					path: this.taskList[this.currentTask].sample_path,
+    					loop: false
+    				}
 
-  			},
+    			},
 
-        // when sound is loaded, go through the trial flow
-  			() => {
-          // reset the frame when the sound ends
-          sampleSound.on("end", () => {
-            this.trialCountdown.state = 1;
-            this.sampleTrialPlaying = false;
-          })
+          // when sound is loaded, go through the trial flow
+    			() => {
+            // reset the frame when the sound ends
+            sampleSound.on("end", () => {
+              this.trialCountdown.state = 1;
+              this.sampleTrialPlaying = false;
+            })
 
-          this.sampleTrialPlaying = true;
-
-          setTimeout(() => {
-            // state: 1 -> 2
-            this.trialCountdown.state += 1;
+            this.sampleTrialPlaying = true;
 
             setTimeout(() => {
-              // state: 2 -> 3
+              // state: 1 -> 2
               this.trialCountdown.state += 1;
 
               setTimeout(() => {
-                // state: 3 -> 4
+                // state: 2 -> 3
                 this.trialCountdown.state += 1;
 
-                // play sound, GO
                 setTimeout(() => {
-                  // state: 4 -> 5
+                  // state: 3 -> 4
                   this.trialCountdown.state += 1;
-                  sampleSound.play();
+
+                  // play sound, GO
+                  setTimeout(() => {
+                    // state: 4 -> 5
+                    this.trialCountdown.state += 1;
+                    sampleSound.play();
+
+                  }, this.isi / 4);
 
                 }, this.isi / 4);
 
@@ -745,10 +746,9 @@ var app = new Vue({
 
             }, this.isi / 4);
 
-          }, this.isi / 4);
-
-        }
-  		);
+          }
+    		);
+      }
     },
 
     // push survey data and end the survey

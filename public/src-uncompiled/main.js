@@ -188,7 +188,7 @@ Vue.component('time-input-validated', {
   template: `<p>
   <span v-if="good == 'night'">On the night b</span><span v-else>B</span>efore a {{ before }},
   <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  what is your {{ superla }} GOOD {{ good | uppercase }} TIME ?
+  what is your <b>{{ superla }}</b> GOOD {{ good | uppercase }} TIME ?
     <input type="number" class="short-input"
       v-bind:value="hours"
       v-on:input="hours = $event.target.value; updateAppState();"

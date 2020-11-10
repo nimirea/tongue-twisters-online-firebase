@@ -555,11 +555,11 @@ var app = new Vue({
             }
           }, this.isi));
 
-          this.snd.play();
-
           setTimeout(() => {
             this.stimVisible = true;
           }, this.isi );
+
+          this.snd.play();
 
         }
   		);
@@ -697,12 +697,12 @@ var app = new Vue({
             })
 
             this.sampleTrialPlaying = true;
-            sampleSound.play();
-
 
             setTimeout(() => {
               this.stimVisible = true;
             }, this.isi);
+            
+            sampleSound.play();
 
           }
     		);

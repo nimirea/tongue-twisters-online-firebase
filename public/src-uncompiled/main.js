@@ -328,6 +328,11 @@ var app = new Vue({
     stimList: [{'twister': ''}], // list of stimuli for TT task
     currentStim: 0, // keep track of which stimulus should be shown
     isi: 1000, // interstimulus interval, in ms
+    trialCountdown: {
+      'state': 1,
+      'class': 'invisible'
+    },
+    sampleTrialPlaying: false,
     consentGiven: false,
     rejected: false, // declined to participate
     trialEnded: false, // TT task
@@ -413,6 +418,11 @@ var app = new Vue({
 
         // upload stimList
         db.ref(this.participant_id + "/stimList/" + this.day).set(this.stimList);
+
+        // don't do mic tests for test user
+        if (this.test_mode) {
+          this.currentTask = 1;
+        }
 
       });
 		},
@@ -541,15 +551,40 @@ var app = new Vue({
 
               // show continue button
               this.trialEnded = true;
+
+              // reset the trial countdown
+              this.trialCountdown.state = 1;
             } else {
               this.stopTask();
             }
           }, this.isi));
 
-          // actually play the sound, but after a 1s pause
           setTimeout(() => {
-            this.snd.play();
-          }, this.isi);
+            // state: 1 -> 2
+            this.trialCountdown.state += 1;
+
+            setTimeout(() => {
+              // state: 2 -> 3
+              this.trialCountdown.state += 1;
+
+              setTimeout(() => {
+                // state: 3 -> 4
+                this.trialCountdown.state += 1;
+
+                // play sound, GO
+                setTimeout(() => {
+                  // state: 4 -> 5
+                  this.trialCountdown.state += 1;
+                  this.snd.play();
+
+                }, this.isi / 4);
+
+              }, this.isi / 4);
+
+            }, this.isi / 4);
+
+          }, this.isi / 4);
+
         }
   		);
 
@@ -673,11 +708,45 @@ var app = new Vue({
   					path: this.taskList[this.currentTask].sample_path,
   					loop: false
   				}
+
   			},
 
-        // when sound is loaded, just play it
+        // when sound is loaded, go through the trial flow
   			() => {
-          sampleSound.play();
+          // reset the frame when the sound ends
+          sampleSound.on("end", () => {
+            this.trialCountdown.state = 1;
+            this.sampleTrialPlaying = false;
+          })
+
+          this.sampleTrialPlaying = true;
+
+          setTimeout(() => {
+            // state: 1 -> 2
+            this.trialCountdown.state += 1;
+
+            setTimeout(() => {
+              // state: 2 -> 3
+              this.trialCountdown.state += 1;
+
+              setTimeout(() => {
+                // state: 3 -> 4
+                this.trialCountdown.state += 1;
+
+                // play sound, GO
+                setTimeout(() => {
+                  // state: 4 -> 5
+                  this.trialCountdown.state += 1;
+                  sampleSound.play();
+
+                }, this.isi / 4);
+
+              }, this.isi / 4);
+
+            }, this.isi / 4);
+
+          }, this.isi / 4);
+
         }
   		);
     },
@@ -750,6 +819,7 @@ var app = new Vue({
       var urlParams = new URLSearchParams(window.location.search);
       this.participant_id = urlParams.get('PROLIFIC_PID');
       this.test_mode = (urlParams.get('TEST_MODE') === 'yes');
+      this.clockPosition = urlParams.get('clock_position');
       this.day = Number(urlParams.get('day'));
 
       // determine whether participant has arrived at the right time,

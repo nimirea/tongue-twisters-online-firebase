@@ -9,7 +9,7 @@
   </style>
 
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-  <link href="./style.css?version=3" rel="stylesheet" type="text/css" />
+  <link href="./style.css?version=13" rel="stylesheet" type="text/css" />
 
 </head>
 <body>
@@ -366,10 +366,21 @@
         metronome. You will see a single tongue-twister appear on the screen,
         and, after one second, you will hear the metronome begin at a slow pace.
         After four beats (1 repetition of the tongue-twister), the metronome
-        will speed up for the next 3 repetitions. Click the button below to hear
+        will speed up for the next 3 repetitions. Click the button below to hear/see
         an example trial for the tongue-twister "ghib ting pin diss":
       </p>
       <button v-on:click="sampleTrial">&#9658; play example</button>
+      <div class="example-trial">
+        <div class="stim">
+          <img v-bind:class="{ invisible: !sampleTrialPlaying, 'countdown-clock': clockPosition != 'top', 'countdown-clock-behind': clockPosition === 'behind' }" v-bind:src="'countdown/' + trialCountdown.state + '.png'"/>
+          <p v-if="sampleTrialPlaying">ghib ting pin diss</p>
+          <p v-else>
+            <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
+          </p>
+          <button class="invisible"></button>
+        </div>
+      </div>
+
       <p>
         Please do your best to keep up with the metronome! If you make a
         mistake, DO <b>NOT</b> go back to correct yourself.
@@ -386,6 +397,7 @@
     </div>
 
     <div v-if="isStarted" class="stim">
+      <img v-bind:class="{ invisible: trialEnded, 'countdown-clock': clockPosition != 'top', 'countdown-clock-behind': clockPosition === 'behind' }" v-bind:src="'countdown/' + trialCountdown.state + '.png'"/>
       <p v-if="!trialEnded">
           {{ stimList[currentStim]['twister'] }}
       </p>
@@ -393,7 +405,7 @@
         <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
       </p>
       <button v-on:click="nextTrial" v-if="trialEnded">next</button>
-      <button v-else class="invisible"></button> <!-- for consistent spacing -->
+      <button v-else class="invisible"></button>
     </div>
   </div>
 

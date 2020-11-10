@@ -37,6 +37,18 @@ button {
 .buttonbox, .stim {
   text-align: center;
 }
+.example-trial {
+  max-width: 75%;
+  height: 20rem;
+  border: 1px solid black;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position:relative;
+  top:-1.5rem;
+  z-index: -1;
+}
 .stim {
   position: fixed;
   top: 50%;
@@ -46,9 +58,29 @@ button {
 .stim p, .stim button {
   font-size:2rem;
 }
+.example-trial > .stim {
+  position: inherit;
+  top: 0;
+  left: 0;
+  transform: translate(0,0);
+}
+
 .fixcross {
   vertical-align: middle;
   height: 2rem;
+}
+.countdown-clock {
+  height:2.5rem;
+  opacity:.5;
+}
+.countdown-clock-behind {
+  height: 20rem;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  z-index: -2;
+  opacity: 0.25;
 }
 
 .rec-symbols {
@@ -93,6 +125,8 @@ span.red, span.blue {
   background-color: transparent;
   border-color: transparent;
   cursor: default;
+  color: transparent;
+  opacity: 0;
 }
 .invisible:focus {
   outline: 0;

@@ -328,10 +328,7 @@ var app = new Vue({
     stimList: [{'twister': ''}], // list of stimuli for TT task
     currentStim: 0, // keep track of which stimulus should be shown
     isi: 1000, // interstimulus interval, in ms
-    trialCountdown: {
-      'state': 1,
-      'class': 'invisible'
-    },
+    stimVisible: false,
     sampleTrialPlaying: false,
     consentGiven: false,
     rejected: false, // declined to participate
@@ -550,38 +547,19 @@ var app = new Vue({
               // show continue button
               this.trialEnded = true;
 
-              // reset the trial countdown
-              this.trialCountdown.state = 1;
+              // hide stimulus in next trial
+              this.stimVisible = false;
+
             } else {
               this.stopTask();
             }
           }, this.isi));
 
+          this.snd.play();
+
           setTimeout(() => {
-            // state: 1 -> 2
-            this.trialCountdown.state += 1;
-
-            setTimeout(() => {
-              // state: 2 -> 3
-              this.trialCountdown.state += 1;
-
-              setTimeout(() => {
-                // state: 3 -> 4
-                this.trialCountdown.state += 1;
-
-                // play sound, GO
-                setTimeout(() => {
-                  // state: 4 -> 5
-                  this.trialCountdown.state += 1;
-                  this.snd.play();
-
-                }, this.isi / 4);
-
-              }, this.isi / 4);
-
-            }, this.isi / 4);
-
-          }, this.isi / 4);
+            this.stimVisible = true;
+          }, this.isi );
 
         }
   		);
@@ -714,37 +692,17 @@ var app = new Vue({
     			() => {
             // reset the frame when the sound ends
             sampleSound.on("end", () => {
-              this.trialCountdown.state = 1;
+              this.stimVisible = false;
               this.sampleTrialPlaying = false;
             })
 
             this.sampleTrialPlaying = true;
+            sampleSound.play();
+
 
             setTimeout(() => {
-              // state: 1 -> 2
-              this.trialCountdown.state += 1;
-
-              setTimeout(() => {
-                // state: 2 -> 3
-                this.trialCountdown.state += 1;
-
-                setTimeout(() => {
-                  // state: 3 -> 4
-                  this.trialCountdown.state += 1;
-
-                  // play sound, GO
-                  setTimeout(() => {
-                    // state: 4 -> 5
-                    this.trialCountdown.state += 1;
-                    sampleSound.play();
-
-                  }, this.isi / 4);
-
-                }, this.isi / 4);
-
-              }, this.isi / 4);
-
-            }, this.isi / 4);
+              this.stimVisible = true;
+            }, this.isi);
 
           }
     		);

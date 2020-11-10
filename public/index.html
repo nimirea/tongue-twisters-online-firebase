@@ -363,17 +363,18 @@
       <h1>Task {{currentTask + 1}} of {{taskList.length}}: Tongue-Twister Task</h1>
       <p>
         We will now ask you to read some tongue-twisters to the beat of a
-        metronome. You will see a single tongue-twister appear on the screen,
-        and, after one second, you will hear the metronome begin at a slow pace.
-        After four beats (1 repetition of the tongue-twister), the metronome
-        will speed up for the next 3 repetitions. Click the button below to hear/see
+        metronome. First,  you will hear a low "get ready" beep, then a tongue twister
+        will appear on the screen with a higher "get set" beep. On the next beep after
+        the tongue-twister appears, please begin
+        reading the tongue-twister aloud, one word per beat. After four beats (1
+        repetition of the tongue-twister), the metronome will speed up for the next
+        3 repetitions. Click the button below to hear/see
         an example trial for the tongue-twister "ghib ting pin diss":
       </p>
       <button v-on:click="sampleTrial" v-bind:class="{ unclickable: sampleTrialPlaying }">&#9658; play example</button>
       <div class="example-trial">
         <div class="stim">
-          <img v-bind:class="{ invisible: !sampleTrialPlaying, 'countdown-clock': clockPosition != 'top', 'countdown-clock-behind': clockPosition === 'behind' }" v-bind:src="'countdown/' + trialCountdown.state + '.png'"/>
-          <p v-if="sampleTrialPlaying">ghib ting pin diss</p>
+          <p v-if="sampleTrialPlaying && stimVisible">ghib ting pin diss</p>
           <p v-else>
             <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
           </p>
@@ -397,15 +398,14 @@
     </div>
 
     <div v-if="isStarted" class="stim">
-      <img v-bind:class="{ invisible: trialEnded, 'countdown-clock': clockPosition != 'top', 'countdown-clock-behind': clockPosition === 'behind' }" v-bind:src="'countdown/' + trialCountdown.state + '.png'"/>
-      <p v-if="!trialEnded">
+      <p v-if="!trialEnded && stimVisible">
           {{ stimList[currentStim]['twister'] }}
       </p>
       <p v-else>
         <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
       </p>
       <button v-on:click="nextTrial" v-if="trialEnded">next</button>
-      <button v-else class="invisible"></button>
+      <button v-else class="invisible">___</button>
     </div>
   </div>
 

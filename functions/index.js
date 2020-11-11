@@ -285,9 +285,6 @@ exports.uploadData = functions.https.onCall((data) => {
       return 1;
 
     })
-    .then((loop_status) => {
-      if (loop_status.)
-    });
 
     return 1;
 

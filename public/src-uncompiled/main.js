@@ -390,6 +390,7 @@ var app = new Vue({
     completionErrors: false
   },
   methods : {
+    uploadData: firebase.functions().httpsCallable('uploadData'),
 		//get timestamp of consent & upload sequence data to database
 		storeConsent: function(){
       // update view
@@ -402,19 +403,15 @@ var app = new Vue({
 
         this.participant_id = res.data;
 
-        var db = firebase.database();
-        // upload consent timestamp
-        db.ref(this.participant_id + "/consent/" + this.day).set(firebase.database.ServerValue.TIMESTAMP);
-
-        // upload audio permissions
-        db.ref(this.participant_id + "/audioPermission/" + this.day).set(this.audioPermission);
-
-        // upload conditions (experimental & counterbalancing)
-        db.ref(this.participant_id + '/expCond').set(this.exp_cond);
-        db.ref(this.participant_id + '/cbCond').set(this.cb_cond);
-
-        // upload stimList
-        db.ref(this.participant_id + "/stimList/" + this.day).set(this.stimList);
+        this.uploadData({
+          'participant_id': this.participant_id,
+          'day': this.day,
+          'consent': 'now',
+          'audioPermission': this.audioPermission,
+          'expCond': this.exp_cond,
+          'cbCond': this.cb_cond,
+          'stimList': this.stimList
+        });
 
       });
 		},
@@ -474,8 +471,10 @@ var app = new Vue({
               this.completionURL = res.message;
 
               // push 'completed' tag up to server
-              var db = firebase.database();
-              db.ref(this.participant_id + "/lastDayCompleted").set(this.day)
+              this.uploadData({
+                'participant_id': this.participant_id,
+                'lastDayCompleted': this.day
+              })
               .then(() => {
                 this.updateTimeRemaining(this.day, () => {
                   this.expOver = true; // update view
@@ -701,7 +700,7 @@ var app = new Vue({
             setTimeout(() => {
               this.stimVisible = true;
             }, this.isi);
-            
+
             sampleSound.play();
 
           }
@@ -711,15 +710,18 @@ var app = new Vue({
 
     // push survey data and end the survey
     submitSurvey: function() {
-      // upload surveyData
-      var db = firebase.database();
-
+      // data to push
+      let push_data = {
+        'participant_id': this.participant_id,
+        'day': this.day,
+        'surveyData': this.surveyData
+      }
       // push stq if this is day 1
       if (this.day === 1) {
-        db.ref(this.participant_id + "/stq").set(this.stq)
+        push_data.stq = this.stq
       }
 
-      db.ref(this.participant_id + "/surveyData/" + this.day).set(this.surveyData)
+      this.uploadData(push_data)
       .then(() => {
         // update view
         this.stopTask();

@@ -240,3 +240,52 @@ exports.setParticipantId = functions.https.onCall((given_ppt_id) => {
   });
 
 });
+
+/**
+* Upload information to the realtime database.
+* @param {Object} data with information to be uploaded. Must contain:
+* @param {String} data.participant_id participant ID
+* @param {Number} data.day current day (if you have day-by-day attributes to
+*   push)
+* @return {Promise} with a result code (1 = success, 0 = fail)
+*/
+exports.uploadData = functions.https.onCall((data) => {
+
+  if (!('participant_id' in data)) {
+    return 0;
+  } else {
+
+    let ppt_id = data.participant_id;
+
+    // permanent attributes, that shouldn't change from day to day
+    let permanent_attr = ['expCond', 'cbCond', 'lastDayCompleted', 'stq']
+
+    Object.entries(data).forEach(([key, value]) => {
+
+      if (key != 'day' && key != 'participant_id' && permanent_attr.indexOf(key) < 0) {
+
+        if (!('day' in data)) {
+          return 0;
+        } else {
+
+          // if we're storing consent time, grab that from the server
+          if (key === 'consent') {
+            value = admin.database.ServerValue.TIMESTAMP;
+          }
+
+          // store values that are different per day
+          db.ref(ppt_id + "/" + key + "/" + data.day).set(value);
+        }
+
+      } else if (permanent_attr.indexOf(key) >= 0) {
+        // values that only need to be written once per participant
+        db.ref(ppt_id + "/" + key).set(value);
+      }
+
+    });
+
+    return 1;
+
+  }
+
+});

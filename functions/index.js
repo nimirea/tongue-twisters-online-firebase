@@ -262,7 +262,7 @@ exports.uploadData = functions.https.onCall((data) => {
 
     Object.entries(data).forEach(([key, value]) => {
 
-      if (key != 'day' && key != 'participant_id' && permanent_attr.indexOf(key) < 0) {
+      if (key !== 'day' && key !== 'participant_id' && permanent_attr.indexOf(key) < 0) {
 
         if (!('day' in data)) {
           return 0;
@@ -282,6 +282,11 @@ exports.uploadData = functions.https.onCall((data) => {
         db.ref(ppt_id + "/" + key).set(value);
       }
 
+      return 1;
+
+    })
+    .then((loop_status) => {
+      if (loop_status.)
     });
 
     return 1;

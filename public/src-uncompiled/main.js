@@ -329,7 +329,6 @@ var app = new Vue({
     currentStim: 0, // keep track of which stimulus should be shown
     isi: 1000, // interstimulus interval, in ms
     stimVisible: false,
-    sampleTrialPlaying: false,
     consentGiven: false,
     rejected: false, // declined to participate
     trialEnded: false, // TT task
@@ -359,7 +358,18 @@ var app = new Vue({
       },
       {
         name: 'TT',
-        sample_path: './samples/TT.mp3'
+        sample_trials: [
+          {
+            path: './samples/TT-1.mp3',
+            isPlaying: false
+          },
+          {
+            path: './samples/TT-2.mp3',
+            isPlaying: false,
+            played: false,
+            completed: false
+          }
+        ]
       },
       {
         name: 'survey'
@@ -387,7 +397,8 @@ var app = new Vue({
     alreadyDone: false, // did the participant already complete THIS day?
     browserOutdated: false,
     completionURL: null,
-    completionErrors: false
+    completionErrors: false,
+    speechRecorded: false
   },
   methods : {
     uploadData: firebase.functions().httpsCallable('uploadData'),
@@ -435,7 +446,8 @@ var app = new Vue({
             // for DDK task we just need to record and then stop
             this.recordingDDK = true;
           } else if (this.taskList[this.currentTask].name == 'mic_check') {
-            this.record();
+            // record with analyzers
+            this.record(true);
           }
 
         	}).catch((err) => {
@@ -449,7 +461,8 @@ var app = new Vue({
     stopTask: function() {
       // stop recording, if it's going
       if (this.isRecording === true) {
-        this.stopRecording();
+        let upload = (this.taskList[this.currentTask].name !== "mic_check");
+        this.stopRecording(upload);
       }
 
 
@@ -568,7 +581,7 @@ var app = new Vue({
   	},
 
     // record the audio
-  	record: function(){
+  	record: function(analyze = false, track_recorded = false){
   		var AudioContext = window.AudioContext || window.webkitAudioContext;
   		var audio_context = new AudioContext();
   		var input = audio_context.createMediaStreamSource(this.stream);
@@ -578,10 +591,15 @@ var app = new Vue({
       this.isRecording = true;
 
       // start updating the soundbar if we're on the mic-check
-      if (this.taskList[this.currentTask].name == "mic_check") {
+      if (analyze === true) {
         this.analyserNode = audio_context.createAnalyser();
         this.analyserNode.fftSize = 2048;
         input.connect(this.analyserNode);
+        if (track_recorded) {
+          this.speechRecorded = false;
+        } else {
+          this.speechRecorded = true;
+        }
         this.updateAnalysers();
       }
 
@@ -592,6 +610,7 @@ var app = new Vue({
     // update soundbar width based on volume
     updateAnalysers: function() {
       if (this.isRecording) {
+        // loop on each frame
     	   requestAnimationFrame(this.updateAnalysers);
        }
 
@@ -629,6 +648,11 @@ var app = new Vue({
         this.soundbar.message = "just right!";
         this.soundbar.color = "blue";
       }
+
+      // keep track of whether any speech was recorded
+      if (this.soundbar.width >= this.soundbar.cutoffs.low && this.speechRecorded === false) {
+        this.speechRecorded = true;
+      }
   	},
 
     // stop recording and play back
@@ -654,15 +678,15 @@ var app = new Vue({
     },
 
     // stop recording and upload
-    stopRecording: function() {
+    stopRecording: function(upload = true) {
       this.recorder.stop();
       this.isRecording = false;
 
-      // compute filename here
-      var filename = this.taskList[this.currentTask].name + "-" + this.currentStim
-
       // upload recording here
-      if (this.taskList[this.currentTask].name !== 'mic_check') {
+      if (upload) {
+        // compute filename here
+        var filename = this.taskList[this.currentTask].name + "-" + this.currentStim
+
   			this.recorder.exportWAV((blob) => {
   				var storage = firebase.storage();
 
@@ -675,13 +699,13 @@ var app = new Vue({
     },
 
     // play sample trial
-    sampleTrial: function() {
-      if (!this.sampleTrialPlaying) {
+    sampleTrial: function(trial_idx, try_along = false) {
+      if (!this.taskList[this.currentTask].sample_trials[trial_idx].isPlaying) {
         var sampleSound = new Pizzicato.Sound(
     			{
     				source:'file',
     				options: {
-    					path: this.taskList[this.currentTask].sample_path,
+    					path: this.taskList[this.currentTask].sample_trials[trial_idx].path,
     					loop: false
     				}
 
@@ -691,20 +715,32 @@ var app = new Vue({
     			() => {
             // reset the frame when the sound ends
             sampleSound.on("end", () => {
+              this.stopRecording(false);
               this.stimVisible = false;
-              this.sampleTrialPlaying = false;
+              this.taskList[this.currentTask].sample_trials[trial_idx].isPlaying = false;
+              this.taskList[this.currentTask].sample_trials[trial_idx].played = true;
+
+              if (try_along === true) {
+                this.taskList[this.currentTask].sample_trials[trial_idx].completed = this.speechRecorded;
+              }
+
             })
 
-            this.sampleTrialPlaying = true;
+            this.taskList[this.currentTask].sample_trials[trial_idx].isPlaying = true;
 
             setTimeout(() => {
               this.stimVisible = true;
             }, this.isi);
 
+            if (try_along === true) {
+              this.record(true, true);
+            }
+
             sampleSound.play();
 
           }
     		);
+
       }
     },
 

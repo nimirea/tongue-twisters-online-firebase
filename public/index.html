@@ -371,10 +371,10 @@
         3 repetitions. Click the button below to hear/see
         an example trial for the tongue-twister "ghib ting pin diss":
       </p>
-      <button v-on:click="sampleTrial" v-bind:class="{ unclickable: sampleTrialPlaying }">&#9658; play example</button>
+      <button v-on:click="sampleTrial(0)" v-bind:class="{ unclickable: taskList[currentTask].sample_trials[0].isPlaying }">&#9658; play example</button>
       <div class="example-trial">
         <div class="stim">
-          <p v-if="sampleTrialPlaying && stimVisible">ghib ting pin diss</p>
+          <p v-if="taskList[currentTask].sample_trials[0].isPlaying && stimVisible">ghib ting pin diss</p>
           <p v-else>
             <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
           </p>
@@ -382,19 +382,52 @@
         </div>
       </div>
 
-      <p>
-        Please do your best to keep up with the metronome! If you make a
-        mistake, DO <b>NOT</b> go back to correct yourself.
-      </p>
-      <p>
-        Please perform this task <b>with your headphones on</b>. You can replay the example trial above and adjust your
-        volume to make sure you can comfortably hear the metronome.
-      </p>
-      <p>
-        This task should last approximately {{ stimList.length * .25 }}
-        minutes. Your recordings will be stored and uploaded for analysis.
-      </p>
-      <button v-on:click="startTask">start experiment (recording will begin automatically)</button>
+      <p>Important notes:</p>
+
+      <ul>
+        <li>
+          Please do your best to keep up with the metronome! If you make a
+          mistake, DO <b>NOT</b> go back to correct yourself.
+        </li>
+        <li>
+          Please perform this task <b>with your headphones on</b>. You can replay the example trial above and adjust your
+          volume to make sure you can comfortably hear the metronome.
+        </li>
+      </ul>
+
+      <div v-if="day === 1">
+
+        <p>Here's another example; try saying this tongue-twister aloud at the same time as the sample speaker. (This practice trial will not be stored.)</p>
+
+        <button v-on:click="sampleTrial(1, true)" v-bind:class="{ unclickable: taskList[currentTask].sample_trials[1].isPlaying }">
+          <span class="rec-symbols">&#x25cf;</span> record practice trial
+        </button>
+        <div class="example-trial">
+          <div class="stim">
+            <p v-if="taskList[currentTask].sample_trials[1].isPlaying && stimVisible">bap nak tam gad</p>
+            <p v-else>
+              <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
+            </p>
+            <button class="invisible"></button>
+          </div>
+        </div>
+
+        <div v-if="taskList[currentTask].sample_trials[1].played === true && taskList[currentTask].sample_trials[1].completed === false">
+          <p>Sorry, we didn't hear you that time. Please try recording the practice trial again.</p>
+        </div>
+        <div v-else-if="taskList[currentTask].sample_trials[1].played === true && taskList[currentTask].sample_trials[1].completed === true">
+          <p>Sounds like you're ready to continue!</p>
+        </div>
+
+      </div>
+
+      <div v-if="day > 1 || (taskList[currentTask].sample_trials[1].played === true && taskList[currentTask].sample_trials[1].completed === true)">
+        <p>
+          This task should last approximately {{ stimList.length * .25 }}
+          minutes. Your recordings will be stored and uploaded for analysis.
+        </p>
+        <button v-on:click="startTask">start experiment (recording will begin automatically)</button>
+      </div>
     </div>
 
     <div v-if="isStarted" class="stim">

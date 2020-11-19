@@ -655,32 +655,10 @@ var app = new Vue({
       }
   	},
 
-    // stop recording and play back
-    playbackTest: function() {
-      this.recorder.stop();
-      this.recorder.exportWAV((blob) => {
-        let dataURI = URL.createObjectURL(blob);
-        let testSound = new Pizzicato.Sound(
-    			{
-    				source:'file',
-    				options: {
-    					path: dataURI,
-    					loop: false
-    				}
-    			},
-
-          // when sound is loaded, just play it
-    			() => {
-            testSound.play();
-          }
-    		);
-      });
-    },
-
-    // stop recording and upload
+    // stop recording and upload, if we need to
     stopRecording: function(upload = true) {
       this.recorder.stop();
-      this.isRecording = false;
+      this.isRecording = false; // update view
 
       // upload recording here
       if (upload) {

@@ -340,10 +340,10 @@ var app = new Vue({
       'fourth'
     ],
     compensation: [
-      14,
-      18,
-      22,
-      26
+      7,
+      9,
+      11,
+      13
     ],
     taskList: [ // tasks, in order
       {

@@ -369,12 +369,12 @@
         reading the tongue-twister aloud, one word per beat. After four beats (1
         repetition of the tongue-twister), the metronome will speed up for the next
         3 repetitions. Click the button below to hear/see
-        an example trial for the tongue-twister "ghib ting pin diss":
+        an example trial for the tongue-twister "ghib ting pin hid":
       </p>
       <button v-on:click="sampleTrial(0)" v-bind:class="{ unclickable: taskList[currentTask].sample_trials[0].isPlaying }">&#9658; play example</button>
       <div class="example-trial">
         <div class="stim">
-          <p v-if="taskList[currentTask].sample_trials[0].isPlaying && stimVisible">ghib ting pin diss</p>
+          <p v-if="taskList[currentTask].sample_trials[0].isPlaying && stimVisible">ghib ting pin hid</p>
           <p v-else>
             <img src="fixcross.png" alt="Fixation cross" class="fixcross"/>
           </p>

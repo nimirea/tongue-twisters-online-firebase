@@ -98,7 +98,7 @@
       <li>Then, you will be asked to put on headphones and read tongue-twisters for about 50 minutes. We will be recording audio during this part of the experiment; <b>allowing us to record audio is mandatory for participating in this research</b>, since we are studying spoken language.</li>
       <li>Finally, you will be asked to complete a post-task survey about your equipment and your sleep habits.</li>
     </ol>
-    <p>After completing the post-task survey on days 1-3, you will be asked to complete the next day’s session of this study 24 hours later. The next day’s session will become visible to you on Prolific after completing the current session, but before 24 hours have elapsed.</p>
+    <p>After completing the post-task survey on days 1-3, you will be asked to complete the next day’s session of this study 24 hours later, after a full night of sleep. The next day’s session will become visible to you on Prolific after completing the current session, but before 24 hours have elapsed.</p>
 
     <h2>Will being in this study help me in any way?</h2>
     <p>We cannot promise any benefits to you or others from your taking part in this research. However, possible benefits include contributing to science that can help create better language-learning tools.</p>
@@ -728,7 +728,7 @@
   <div v-if="expOver">
     <p>Your response has been successfully submitted!</p>
     <p v-if="(day == 2 || day = 3) && surveyData.lastNightSleep < 3">You are <b>not eligible</b> for any more sessions in this experiment. Thank you for your participation in this experiment.</p>
-    <p v-else-if="day != 4">You will be added to the eligibility pool for tomorrow's session on Prolific shortly. Please check back after {{ timeRemainingString }}.</p>
+    <p v-else-if="day != 4">You will be added to the eligibility pool for tomorrow's session on Prolific shortly. Please check back after {{ timeRemainingString }}, and be sure to get a full night's sleep before your next session.</p>
     <p v-else>Thank you for your participation in this experiment!</p>
     <p>Please <a v-bind:href="completionURL">click here</a> to get credit on Prolific for today's session.</p>
   </div>

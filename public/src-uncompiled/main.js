@@ -886,6 +886,11 @@ var app = new Vue({
                   if (prev_stim_ids === null) {
                     console.log("Sorry! Not enough data to create stimulus list.");
                     this.stimList = null;
+
+                    // remove experimental task from taskList
+                    this.taskList = this.taskList.filter(item => item.name != "TT");
+
+
                   } else {
                     this.stimList = this.stimList.filter(item => {
                         return !(prev_stim_ids.includes(item.stim_id));

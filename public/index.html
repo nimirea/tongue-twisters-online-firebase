@@ -727,7 +727,7 @@
   <!-- experiment over -->
   <div v-if="expOver">
     <p>Your response has been successfully submitted!</p>
-    <p v-if="(day == 2 || day = 3) && surveyData.lastNightSleep < 3">You are <b>not eligible</b> for any more sessions in this experiment. Thank you for your participation in this experiment.</p>
+    <p v-if="(day == 2 || day == 3) && surveyData.lastNightSleep < 3">You are <b>not eligible</b> for any more sessions in this experiment. Thank you for your participation in this experiment.</p>
     <p v-else-if="day != 4">You will be added to the eligibility pool for tomorrow's session on Prolific shortly. Please check back after {{ timeRemainingString }}, and be sure to get a full night's sleep before your next session.</p>
     <p v-else>Thank you for your participation in this experiment!</p>
     <p>Please <a v-bind:href="completionURL">click here</a> to get credit on Prolific for today's session.</p>

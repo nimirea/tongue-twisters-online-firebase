@@ -840,6 +840,9 @@ var app = new Vue({
           this.exp_cond = res.data.exp_cond;
           this.cb_cond = res.data.cb_cond;
 
+          // adjust compensation based on assigned condition
+          this.compensation = this.compensation.slice(0, this.exp_cond.split("-").length * 2);
+
           // get stimuli from CSV file
           var stim_file = './stimuli.csv'
           if (this.test_mode) {

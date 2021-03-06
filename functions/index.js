@@ -136,7 +136,7 @@ exports.getConsentTime = functions.https.onCall((data) => {
 *  - cb_cond {String} counterbalancing condition of participant
 *  - exp_cond {String} experimental condition of participant (onset/coda)
 */
-exports.getParticipantConds = functions.https.onCall((participant_id) => {
+exports.getParticipantConds = functions.https.onCall((data) => {
 
   // randomly pick a variable from an array
   function pick_random(array) {
@@ -153,33 +153,46 @@ exports.getParticipantConds = functions.https.onCall((participant_id) => {
 
   // options for each variable
   let cb_opts = ["AE->F; IH->S", "AE->S; IH->F"];
-  let exp_opts = ["onset", "coda"];
+  let exp_opts = ["onset-coda", "onset-onset"];
 
   // set variable that will be returned (initialize with random values)
   let result_value = {}
 
-  if (participant_id === null) {
+  if (data.participant_id === null) {
     result_value.cb_cond = pick_random(cb_opts);
-    result_value.exp_cond = pick_random(exp_opts);
+
+    if (data.exp_ver != "4") {
+      result_value.exp_cond = "coda"
+    } else {
+      result_value.exp_cond = pick_random(exp_opts);
+    }
 
     return result_value;
   } else {
-    return db.ref(participant_id).once('value')
+    return db.ref(data.participant_id).once('value')
       .then((snapshot_pptData) => {
         pptData = snapshot_pptData.val();
 
         if (pptData === null) {
           result_value.cb_cond = pick_random(cb_opts);
-          result_value.exp_cond = pick_random(exp_opts);
+          if (data.exp_ver != "4") {
+            result_value.exp_cond = "coda"
+          } else {
+            result_value.exp_cond = pick_random(exp_opts);
+          }
         } else {
           result_value.cb_cond = change_if_null(
             pptData.cbCond,
             cb_opts
           );
-          result_value.exp_cond = change_if_null(
-            pptData.expCond,
-            exp_opts
-          );
+          if (data.exp_ver != "4") {
+            result_value.exp_cond = "coda"
+          } else {
+            result_value.exp_cond = change_if_null(
+              pptData.expCond,
+              exp_opts
+            );
+          }
         }
 
         return result_value

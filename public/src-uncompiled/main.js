@@ -378,8 +378,10 @@ var app = new Vue({
     currentTask: 0, // keeps track of which task is active
     recordingDDK: false, // whether DDK task is recording
 		participant_id: null,
-    exp_cond: null, // experiment condition
+    exp_cond: null, // experiment condition (onset, coda-onset, or coda-coda)
+    exp_ver : null, // set based on length of experiment (given in URI): 4 for long version, null otherwise
     cb_cond: null, // counterbalancing condition
+    exp_length: null, // experiment length, will depend on URL parameter
     surveySubmitted: false, // whether ending survey has been submitted or not
     surveyData: { }, // data for the survey at the end
     stq: { }, // sleep timing questionnaire
@@ -792,6 +794,7 @@ var app = new Vue({
       // getting participant ID from URL
       var urlParams = new URLSearchParams(window.location.search);
       this.participant_id = urlParams.get('PROLIFIC_PID');
+      this.exp_ver = urlParams.get('exp_length');
       this.test_mode = (urlParams.get('TEST_MODE') === 'yes');
       this.clockPosition = urlParams.get('clock_position');
       this.day = Number(urlParams.get('day'));
@@ -829,7 +832,10 @@ var app = new Vue({
 
       // set experimental & counterbalancing conditions
       var gpc = firebase.functions().httpsCallable('getParticipantConds');
-      gpc(this.participant_id).then((res) => {
+      gpc({
+        participant_id: this.participant_id,
+        exp_ver: this.exp_ver
+      }).then((res) => {
 
           this.exp_cond = res.data.exp_cond;
           this.cb_cond = res.data.cb_cond;
@@ -846,22 +852,25 @@ var app = new Vue({
               this.stimList = Papa.parse(data, {
                   'header': true,
                   'skipEmptyLines': true,
-                  'columns': ['stim_id', 'cb_cond', 'exp_cond', 'exp_idx', 'twister']
+                  'columns': ['stim_id', 'cb_cond', 'exp_cond', 'crit_cons', 'twister']
               }).data;
 
-              // filter by day and conditions
+              // filter by day and conditions:
+
+              // assign critical consonant based on day of experiment
+              var cons_group_today = "";
+              if (this.day <= 2) {
+                cons_group_today = "FS";
+              } else {
+                cons_group_today = "VZ";
+              }
+
+              // retrive experimental condition for this day
+              var exp_cond_today = this.exp_cond.split("-")[Math.round((this.day) / 2) - 1];
               this.stimList = this.stimList.filter(item => {
 
-                var right_day = true;
-
-                if (this.day <= 2) {
-                  right_day = (item.exp_idx == "1");
-                } else {
-                  right_day = (item.exp_idx == "2");
-                }
-
-                return (right_day
-                        && item.exp_cond == this.exp_cond
+                return (item.crit_cons == cons_group_today
+                        && item.exp_cond == exp_cond_today
                         && item.cb_cond == this.cb_cond)
 
               });

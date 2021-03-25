@@ -793,7 +793,7 @@ var app = new Vue({
 
       // getting participant ID from URL
       var urlParams = new URLSearchParams(window.location.search);
-      this.participant_id = urlParams.get('PROLIFIC_PID');
+      this.participant_id = urlParams.get('PROLIFIC_PID').replace("\.", "-");
       this.exp_ver = urlParams.get('exp_length');
       this.test_mode = (urlParams.get('TEST_MODE') === 'yes');
       this.clockPosition = urlParams.get('clock_position');

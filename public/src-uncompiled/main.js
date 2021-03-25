@@ -793,9 +793,9 @@ var app = new Vue({
 
       // getting participant ID from URL
       var urlParams = new URLSearchParams(window.location.search);
-      this.participant_id = urlParams.get('PROLIFIC_PID');
+      this.participant_id = urlParams.get('ppt');
       if (this.participant_id !== null) {
-        this.participant_id = this.participant_id.replace("\.", "|")
+        this.participant_id = this.participant_id.replaceAll("\.", "|")
       }
 
       this.exp_ver = urlParams.get('exp_length');

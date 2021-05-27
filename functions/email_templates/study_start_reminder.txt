@@ -1,0 +1,5 @@
+Hi there,
+
+We notice that you have not yet started your first study session. In order to complete all sessions before your drop-off appointment on {{{ dropoff_datetime_formatted }}} (and earn the full ${{ max_amount }} for participating), we recommend starting your first session before {{{ latest_start_time_formatted }}} today: {{{ study_link }}}
+
+Please let us know if you have any issues accessing the study!

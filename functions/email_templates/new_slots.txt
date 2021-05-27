@@ -1,0 +1,5 @@
+Hi there,
+
+We have added additional timeslots for our study, "Tongue-Twisters Across Multiple Nights." Click here to schedule your equipment pick-up and drop-off appointments: {{{ appointment_schedule_link }}}
+
+As a reminder, here is a copy of your signed consent form, which also contains more detailed information about our experiment: {{{ consent_record_link }}}

@@ -1,0 +1,9 @@
+Hi there,
+
+You have an equipment {{ appt_type }} appointment scheduled for {{{ time_formatted }}} today. The appointment will last no more than 15 minutes.{{instructions}} If you need to reschedule this appointment, please let us know as soon as possible by responding to this email.
+
+IMPORTANT--Please complete this quick COVID pre-screening survey before arriving at your appointment: {{{ covid_screener_link }}}
+
+The experimenter will meet you {{ loc.name }}. Here is link to a map of this location: {{{ loc.maps_link }}}
+
+We look forward to seeing you soon! If you have any questions, please respond to this email.

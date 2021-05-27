@@ -1,0 +1,3 @@
+We have a new sign-up for the experiment! Here is their information for Fitbits:
+
+{{{ fitbit_demo_info }}}

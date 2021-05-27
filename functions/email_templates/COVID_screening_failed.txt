@@ -1,0 +1,5 @@
+Participant {{ ppt_id }} has failed their COVID screening! Email them at {{ ppt_email }} to reschedule their {{ appts_to_reschedule }} appointment(s).
+
+Here were their answers:
+
+{{{ answers }}}

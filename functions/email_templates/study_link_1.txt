@@ -1,0 +1,9 @@
+Hi there,
+
+Thank you for picking up your equipment! Here is the link to your first study session: {{{ study_link }}}
+
+This session will take around 30 minutes to complete. Please complete the session in a quiet environment, since you will need to record audio during the session. Because of this, you should also use a laptop or desktop computer (NOT a smartphone or tablet) to access the study. You can use Chrome, Firefox, Microsoft Edge, or Safari to access the experiment.
+
+In order to complete {{ total_sessions_text }} sessions before your drop-off appointment on {{{ dropoff_datetime_formatted }}}, we recommend starting your first session before {{{ latest_start_datetime_formatted_timefirst }}}.
+
+If you have any questions, please let us know. Please remember to wear your Fitbit on nights between sessions.

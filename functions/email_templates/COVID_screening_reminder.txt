@@ -1,0 +1,5 @@
+Hi there,
+
+We notice that you have not yet completed your COVID pre-screening. Please do so before meeting the experimenter today{{ why_message }}: {{{ covid_screener_link }}}
+
+{{ thanks_message }}

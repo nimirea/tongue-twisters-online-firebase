@@ -112,13 +112,18 @@ exports.checkCOVID = function(submitted_data) {
 }
 
 exports.checkExperimenterPW = function(data) {
-  if (data === "1roncladlentils") {
+  // set process.env variable
+  require('dotenv').config();
+
+  if (data === process.env.EXP_DASHBOARD_PW) {
     return DB.ref("ppt").once('value').then((snapshot) => {
       let all_data = snapshot.val()
 
-      Object.values(all_data).forEach((ppt_info) => {
-        delete ppt_info["stimList"];
-      })
+      if (all_data !== null && all_data !== undefined) {
+        Object.values(all_data).forEach((ppt_info) => {
+          delete ppt_info["stimList"];
+        })
+      }
 
       return all_data;
     });

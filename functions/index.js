@@ -55,5 +55,5 @@ module.exports = {
 // **** SCHEDULED FUNCTIONS *****
 
 module.exports.everyThirtyMins = FUNCTIONS.pubsub.schedule('every 30 minutes')
-  .timeZone(process.env.EXP_TIMEZONE) // Users can choose timezone - default is America/Los_Angeles
+  .timeZone(constants.timezone) // Users can choose timezone - default is America/Los_Angeles
   .onRun((context) => { return scheduled.runAllFunctions(); });

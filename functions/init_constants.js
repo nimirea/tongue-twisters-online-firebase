@@ -22,7 +22,8 @@ const location =  {
   name: process.env.EXP_LOCATION_NAME,
   maps_link: process.env.EXP_LOCATION_URL
 }
-const time_zone = process.env.EXP_TIMEZONE
+const daily_email_time = parseInt(process.env.EXP_DAILY_EMAIL_TIME)
+const timezone = process.env.EXP_TIMEZONE
 
 const email_templates_dir = './email_templates'
 
@@ -35,5 +36,6 @@ module.exports = {
   dropoff_day,
   email_templates_dir,
   location,
-  time_zone
+  daily_email_time,
+  timezone
 };

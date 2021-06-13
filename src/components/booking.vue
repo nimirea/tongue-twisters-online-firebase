@@ -7,7 +7,7 @@
 
     <p>Please book appointments to pick up and drop off your equipment. Drop-off options will appear after you have selected a pick-up time and drop-off appointments must be within five days of your pick-up appointment.</p>
 
-    <p>All appointments will take place outside Swift Hall.</p>
+    <p>All appointments will take place {{ location_name }}.</p>
 
     <h3>Pick-up options</h3>
 
@@ -143,7 +143,8 @@ export default {
         dropoff: undefined
       },
       uploading: false,
-      study_full: false
+      study_full: false,
+      location_name: null
     }
   },
   methods: {
@@ -227,6 +228,12 @@ export default {
           atwl(this.pptId)
         }
       })
+    },
+    loadApptLocation: function() {
+      let gal = fb_functions.httpsCallable('getApptLoc')
+      gal().then((res) => {
+        this.location_name = res.data;
+      })
     }
   },
   computed: {
@@ -242,6 +249,7 @@ export default {
     }
   },
   created: function() {
+    this.loadApptLocation();
     this.loadApptOptions();
   }
 }

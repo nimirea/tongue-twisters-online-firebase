@@ -268,8 +268,9 @@ let runAllFunctions = function() {
       // console.log(data.items);
 
       // daily 8am emails
+      require('dotenv').config();
       let dailyRunTime = {
-        hours: 8,
+        hours: parseInt(process.env.EXP_DAILY_EMAIL_TIME),
         mins: 0
       }
 

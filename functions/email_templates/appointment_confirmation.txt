@@ -4,6 +4,6 @@ Welcome to our experiment! Thank you for agreeing to participate, and for bookin
 
 Your equipment pick-up appointment is scheduled for {{{ pickup_formatted }}}, and your drop-off appointment is scheduled for {{{ dropoff_formatted }}}. You will receive a reminder email on the morning before each appointment, which will also contain a link to an online COVID pre-screening survey. Please complete this survey before your appointment.
 
-Both appointments will be {{ loc.name }}. Here is link to a map of this location: {{{ loc.maps_link }}}
+Both appointments will take place {{ loc.name }}. Here is link to a map of this location: {{{ loc.maps_link }}}
 
 We look forward to meeting you at your pick-up appointment! If you have any questions, please feel free to respond to this email.

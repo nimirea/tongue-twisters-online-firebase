@@ -4,6 +4,8 @@ const {
   ADMIN
 } = require('./init_admin');
 
+require('dotenv').config();
+
 const constants = require('./init_constants')
 
 // // require cors
@@ -36,6 +38,7 @@ module.exports = {
   'submitData': FUNCTIONS.https.onCall(form_processing.submitData),
   'getPptData': FUNCTIONS.https.onCall(getters.getPptData),
   'getAvailableTimeslots': FUNCTIONS.https.onCall(getters.getAvailableTimeslots),
+  'getApptLoc': FUNCTIONS.https.onCall(getters.getApptLoc),
   'getBookedTimeslots': FUNCTIONS.https.onCall(getters.getBookedTimeslots),
   'getStartTime': FUNCTIONS.https.onCall(getters.getStartTime),
   'getStims': FUNCTIONS.https.onCall(getters.getStims),
@@ -52,5 +55,5 @@ module.exports = {
 // **** SCHEDULED FUNCTIONS *****
 
 module.exports.everyThirtyMins = FUNCTIONS.pubsub.schedule('every 30 minutes')
-  .timeZone('America/Chicago') // Users can choose timezone - default is America/Los_Angeles
+  .timeZone(process.env.EXP_TIMEZONE) // Users can choose timezone - default is America/Los_Angeles
   .onRun((context) => { return scheduled.runAllFunctions(); });

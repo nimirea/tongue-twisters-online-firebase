@@ -344,8 +344,13 @@ let getWaitingListLength = function() {
     })
 }
 
+let getApptLoc = function() {
+  return constants.location.name;
+}
+
 module.exports = {
   getAvailableTimeslots,
+  getApptLoc,
   getBookedTimeslots,
   getPptData,
   getStartTime,

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Speech Experiments Code
 
 ## Purpose
@@ -169,8 +168,3 @@ These experiments and the experimenter dashboard should work in the latest versi
 
 * Many thanks to Chun Chan for help figuring out how to record audio using JavaScript, push it to the Firebase server, and display a volume meter during th esetup phase.
 * Thanks to Matt Goldrick and the members of Soundlab for beta testing the experiment and providing helpful feedback on design!
-=======
-# tongue-twisters-online-firebase
-
-This directory contains code for running the speech experiments (and scheduling participants) on a Firebase instance.
->>>>>>> 1a1e48668b4de54abc2fb142799b7c8806bc38fe

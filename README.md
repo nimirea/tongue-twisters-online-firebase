@@ -2,9 +2,7 @@
 
 ## Purpose
 
-This directory contains code for running tongue-twister experiments (and scheduling participants) on a Firebase instance. The speech experiments are written using the Vue.js framework on the front end, and Firebase on the backend.
-
-Disclaimer: this code is specific to running our preregistered design. For anything other than a replication of our work, it will require considerable modification.
+This directory contains code for running the speech experiments (and scheduling participants) on a Firebase instance. The speech experiments are written using the Vue.js framework on the front end, and Firebase on the backend.
 
 ## Usage Guide
 
@@ -15,7 +13,7 @@ Here are steps for how to get your study online, under a Firebase project that y
 #### 1. Install Firebase and Other Required Packages Locally
 
 1. Create a Google Firebase account, if you don't have one already.
-2. Install the [https://firebase.google.com/docs/cli/](Firebase CLI) on your local machine
+2. Install the [Firebase CLI](https://firebase.google.com/docs/cli/) on your local machine
 3. Set up a Firebase project first. Make sure that you select the Blaze plan, which lets you use cloud functions. At the time of writing, it is quite cheap to host data on there—I do not expect to pay more than \$1 total to run about 100 participants in this experiment.
 4. Run `firebase init` in _this_ directory. Add the realtime database, hosting, storage, pubsub, and emulators as options. Link it to your just-created project.
 5. Run `npm install` inside this directory to update packages as needed.
@@ -100,7 +98,7 @@ To start a local emulation of Firebase:
 firebase emulators:start
 ```
 
-To auto-compile the dev build of the Vue frontend:
+To auto-compile the dev build of the Vue frontend (this may need to be run twice):
 
 ```
 npm run watch

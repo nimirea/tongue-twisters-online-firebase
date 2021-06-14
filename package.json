@@ -8,12 +8,13 @@
     "watch": "vue-cli-service build --watch --mode development",
     "serve-firebase": "bash emulate.sh",
     "deploy-hosting": "vue-cli-service build && firebase deploy --only hosting",
-    "deploy-all": "vue-cli-service build && firebase deploy", 
+    "deploy-all": "vue-cli-service build && firebase deploy",
     "lint": "vue-cli-service lint",
     "stop": "lsof -t -i :5001 -i:5000 -i:9000 | xargs kill -9"
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "eslint-config-google": "^0.14.0",
     "firebase": "^8.1.1",
     "firebase-functions": "^3.14.0",
     "onchange": "^7.1.0",
@@ -26,7 +27,7 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",
     "vue-template-compiler": "^2.6.11",
     "whatwg-fetch": "^3.5.0"

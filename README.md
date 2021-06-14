@@ -88,21 +88,35 @@ Daily reminder emails (the COVID survey, a reminder to start the study) will be 
 
 Your experimenter dashboard (which will be available at `your-url-here.com/experimenter`) will be password protected with the password you choose here.
 
-#### 3. Spinning up a Dev Server [optional]
+#### 3. Spinning up a Local Dev Server for Testing [optional]
 
-To start a local emulation of Firebase and auto-compile the dev build of Vue for testing, use the following command:
+The dev server requires both a local emulation of Firebase and a build of the Vue frontend.
+
+To start a local emulation of Firebase:
+
+```
+firebase emulators:start
+```
+
+To auto-compile the dev build of the Vue frontend:
+
+```
+npm run watch
+```
+
+To do both at the same time with a single command, first install [tmuxinator](https://github.com/tmuxinator/tmuxinator), then run:
 
 ```
 npm run serve-firebase
 ```
 
-This will create two tmux panes—one with your Firebase logs, and the other with the status of your Vue.js build. Happy tinkering!
+This will create two tmux panes—one with your Firebase logs, and the other with the status of your Vue.js build.
 
 Note that the emulator database is not persistent from session to session, so if you plan to use this mode to run a study offline, in a lab, you'll need to save the database to a separate JSON file between sessions! This method is not recommended, because of the high potential for data loss, but if you are dealing with especially sensitive information, it may be preferable.
 
 #### 4. Deployment
 
-To actually get your study online, first stop your Vue auto-builder (Ctrl+C in the Vue pane from the previous step) and run:
+To actually get your study online, first stop your Vue auto-builder (Ctrl+C in the Vue pane/window from the previous step) and run:
 
 ```
 npm run deploy-all

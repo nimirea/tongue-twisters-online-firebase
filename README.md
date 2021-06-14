@@ -2,7 +2,9 @@
 
 ## Purpose
 
-This directory contains code for running the speech experiments (and scheduling participants) on a Firebase instance. The speech experiments are written using the Vue.js framework on the front end, and Firebase on the backend.
+This directory contains code for running tongue-twister experiments (and scheduling participants) on a Firebase instance. The speech experiments are written using the Vue.js framework on the front end, and Firebase on the backend.
+
+Disclaimer: this code is specific to running our preregistered design. For anything other than a replication of our work, it will require considerable modification.
 
 ## Usage Guide
 

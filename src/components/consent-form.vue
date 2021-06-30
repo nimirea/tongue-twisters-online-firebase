@@ -223,6 +223,11 @@ export default {
         // use experiment version
         this.useExpVer(this.given_data.exp_ver);
 
+        // change to default consent version
+        if ('consent_version' in res.data === false) {
+          this.consent_version = 4;
+        }
+
       });
     }
 

@@ -173,6 +173,7 @@ let uploadData = function(data) {
       'state',
       'permissions',
       'consent',
+      'consent_version',
       'demographics',
       'email',
       'exp_ver'

@@ -3,7 +3,12 @@
   <div v-else>
     <h1>Consent to Participate in Research<span v-if="record === true"><br/>(signed {{given_data.consent | parseDate }})</span></h1>
 
-    <h2>Title of Research Study: <span class="italic">Tongue-Twisters Across Multiple Days</span></h2>
+    <h2>Title of Research Study:
+      <span class="italic">
+        <span v-if="consent_version <= 5">Tongue-Twisters Across Multiple Days</span>
+        <span v-else>Doctoral Dissertation Research: Role of Prior Knowledge in Consolidation of Novel Phonotactic Patterns for Speech Production</span>
+      </span>
+    </h2>
 
     <h2>Principal Investigator:
     <span class="italic">Matthew Goldrick</span></h2>
@@ -29,7 +34,7 @@
     <p>We are asking you to take part in this research study because you have responded to our screening survey indicating that you are an adult native English speaker with no history of speech, hearing, language, or sleep disorder. In addition, you indicated that you own the equipment necessary to complete the tongue-twister task, and that you would be willing to log into the study at the same time for {{ compensation.length }} days in a row.</p>
 
     <h2>How many people will be in this study?</h2>
-    <p>We expect about 78 people will be in this research study.</p>
+    <p>We expect about <span v-if="consent_version <= 4">78</span><span v-else>130</span> people will be in this research study.</p>
 
     <h2>What should I know about participating in a research study?</h2>
 
@@ -158,7 +163,8 @@ export default {
       permissions: [],
       compensation: [],
       given_data: {},
-      uploading: false
+      uploading: false,
+      consent_version: 6
     }
   },
   methods: {
@@ -171,7 +177,8 @@ export default {
         'participant_id': this.pptId,
         'consent': 'now',
         'permissions': this.permissions,
-        'state': "appointment-booking"
+        'state': "appointment-booking",
+        'consent_version': this.consent_version
       }).then((new_ppt_info) => {
         self.uploading = false;
         self.$emit('finished', new_ppt_info.data.ppt_id, true)
@@ -209,7 +216,7 @@ export default {
 
     // record mode
     } else {
-      get_data({ppt_id: this.pptId, attribute: ['exp_ver', 'consent', 'permissions']}).then((res) => {
+      get_data({ppt_id: this.pptId, attribute: ['exp_ver', 'consent', 'permissions', 'consent_version']}).then((res) => {
         // store results
         this.given_data = res.data;
 

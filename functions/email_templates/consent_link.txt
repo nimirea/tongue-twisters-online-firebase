@@ -1,5 +1,5 @@
 Hi there!
 
-Thank you for your interest in our research study, Tongue-Twisters Across Multiple Nights. Here is the consent form for our experiment, which contains more information about the study: {{{ consent_link }}}
+Thank you for your interest in our research study, Prior Knowledge and Novel Phonotactic Patterns. Here is the consent form for our experiment, which contains more information about the study: {{{ consent_link }}}
 
 If you choose to participate, you will be able to book appointments for picking up and dropping off research equipment using the website above.

@@ -42,7 +42,7 @@ let send = function (subject, message, to_email) {
     from: process.env.GOOGLE_USERNAME,
     to: to_email,
     subject: subject,
-    text: message + "\n\nBest,\nTongue-Twisters Across Multiple Nights Research Team"
+    text: message + "\n\nBest,\nMulti-Night Study Research Team"
   }
 
   transporter.sendMail(mailOptions, function(err, data) {

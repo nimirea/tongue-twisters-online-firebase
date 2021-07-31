@@ -47,13 +47,6 @@
     @error-catch="updateFormErrors"
   ></textbox-question>
 
-  <p>Did you wear the Fitbit last night?</p>
-  <radio-button-question
-    v-model="survey_answers.lastNightTracker"
-    group-id="lastNightTracker"
-    :labels="['Yes', 'No']"
-  ></radio-button-question>
-
   <p v-if="day > 1">Did you wear the Fitbit last night?</p>
   <radio-button-question v-if="day > 1"
     v-model="survey_answers.lastNightTracker"

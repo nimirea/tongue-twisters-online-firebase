@@ -213,7 +213,7 @@ let remindCOVIDScreener = function(item) {
 
         let daysSinceScreen = date_utils.getTimeDiff(lastScreenTime, now, units = "days")
 
-        if (daysSinceScreen.time < 1 && daysSinceScreen.dates.earlier === lastScreenTime.getTime()) {
+        if (daysSinceScreen.diff < 1 && daysSinceScreen.dates.earlier === lastScreenTime.getTime()) {
           is_completed = true;
         }
       }

@@ -66,8 +66,9 @@ let getAvailableTimeslots = function (include_dropoffs = true) {
 
             if (include_dropoffs === true || weekdays[blockInfo.dayOfWeek] !== constants.dropoff_day) {
 
-              // split block into 15-minute chunks
-              for (var slot_idx = 0 ; slot_idx < 60/appt_length; slot_idx++ ) {
+              // split block into chunks
+              let availability_length = date_utils.getTimeDiff(blockInfo.startTime, blockInfo.endTime, "minutes").diff
+              for (var slot_idx = 0 ; slot_idx < availability_length/appt_length; slot_idx++ ) {
 
                 slotInfo = {
                   dayOfWeek: weekdays[blockInfo.dayOfWeek],

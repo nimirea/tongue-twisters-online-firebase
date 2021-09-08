@@ -313,7 +313,7 @@
     <!-- experiment over -->
     <div v-if="expOver">
       <p>Your response has been successfully submitted!</p>
-      <p v-if="day != exp_ver">You will receive an email shortly with a link to tomorrow's session. Please click the link after {{ timeRemainingString }}, and be sure to get a full night's sleep before your next session.</p>
+      <p v-if="day != exp_ver">You will receive an email shortly with a link to tomorrow's session. Please click the link after {{ timeRemainingString }}, and be sure to get a full night's sleep (while wearing your Fitbit) before your next session.</p>
       <p v-else>Thank you for your participation in this experiment! We look forward to seeing you at your equipment drop-off appointment.</p>
     </div>
   </div>

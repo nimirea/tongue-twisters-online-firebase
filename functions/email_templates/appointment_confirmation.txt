@@ -2,7 +2,7 @@ Hi there,
 
 Welcome to our experiment! Thank you for agreeing to participate, and for booking your pick-up/drop-off appointments. Here is a copy of your consent form for your records: {{{ completed_consent_link }}}
 
-Your equipment pick-up appointment is scheduled for {{{ pickup_formatted }}}, and your drop-off appointment is scheduled for {{{ dropoff_formatted }}}. You will receive a reminder email on the morning before each appointment, which will also contain a link to an online COVID pre-screening survey. Please complete this survey before your appointment.
+Your equipment pick-up appointment is scheduled for {{{ pickup_formatted }}}, and your drop-off appointment is scheduled for {{{ dropoff_formatted }}}. Each appointment should take no longer than {{ appt_length_mins }} minutes. You will receive a reminder email on the morning before each appointment, which will also contain a link to an online COVID pre-screening survey. Please complete this survey before your appointment.
 
 Both appointments will take place {{ loc.name }}. Here is link to a map of this location: {{{ loc.maps_link }}}
 

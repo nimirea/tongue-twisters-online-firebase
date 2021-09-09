@@ -48,7 +48,7 @@ let getAvailableTimeslots = function (include_dropoffs = true) {
 
           // parameters for splitting up slots
           let appt_slots = []
-          let appt_length = 15 // appointment length in minutes
+          let appt_length = constants.appt_length_mins // appointment length in minutes
           let time_markers = ["startTime", "endTime"]
           let date_divider = ", "
           let blockInfo = {}

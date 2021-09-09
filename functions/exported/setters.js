@@ -106,8 +106,9 @@ let bookAppts = function(data) {
             "appointment_confirmation",
             {
               completed_consent_link: "https://" + constants.urls.exp + "/?ppt=" + ppt_id_number + "&page=consent_record",
-              dropoff_formatted: date_utils.formatDate(date_utils.parseISOLocal(data.dropoff.startTime)).full + " to " + date_utils.formatDate(date_utils.parseISOLocal(data.dropoff.endTime)).time,
-              pickup_formatted: date_utils.formatDate(date_utils.parseISOLocal(data.pickup.startTime)).full + " to " + date_utils.formatDate(date_utils.parseISOLocal(data.dropoff.endTime)).time,
+              dropoff_formatted: date_utils.formatDate(date_utils.parseISOLocal(data.dropoff.startTime)).full,
+              pickup_formatted: date_utils.formatDate(date_utils.parseISOLocal(data.pickup.startTime)).full,
+              appt_length_mins: constants.appt_length_mins,
               loc: constants.location
             },
             ppt_email

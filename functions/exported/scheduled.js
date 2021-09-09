@@ -116,6 +116,7 @@ let appointmentReminder = function(item) {
     "appointment_reminder",
     {
       appt_type: appt_name.toLowerCase(),
+      appt_length_mins: constants.appt_length_mins,
       time_formatted: appt_start_time,
       instructions: ppt_info.event_type === "dropoff" ? " Please bring your activity monitor (Fitbit) to the appointment." : "",
       loc: constants.location,

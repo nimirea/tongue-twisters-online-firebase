@@ -65,8 +65,12 @@ The project uses two Google calendars to manage booking equipment pick-up/drop-o
 
 The calendars serve different roles in the booking process:
 
-1. `EXP_AVAILABILITY_CALENDAR`: each event on this calendar will be split into 15-minute timeslots for booking participants. Availability events should occur on Mondays (for pick-up appointments) and Fridays (for drop-off appointments).
+1. `EXP_AVAILABILITY_CALENDAR`: each event on this calendar will be split into timeslots for booking participants. Availability events should occur on Mondays (for pick-up appointments) and Fridays (for drop-off appointments). These events will be split into timeslots with length equal to `EXP_APPT_MINS` minutes.
 2. `EXP_BOOKINGS_CALENDAR`: events on this calendar are created by the Firebase app automatically, when participants book appointment slots. Each event represents an appointment, and the title contains information about the appointment (the participant's numeric ID, their email address, and the type of appointment [pick-up/drop-off]).
+
+##### Appointment Timeslot Length (`EXP_APPT_MINS`)
+
+This variable sets the length of each appointment timeslot, in minutes. If you have an upper bound _n_ on how many participants can be run in a given week—for example, due to limited equipment or limited funds—be careful not to open availability events that are longer than `EXP_APPT_MINS` * _n_.
 
 ##### Study Location (`EXP_LOCATION_NAME`, `EXP_LOCATION_URL`)
 

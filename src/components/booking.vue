@@ -1,9 +1,10 @@
 <template>
   <loading-view v-if="uploading === true"></loading-view>
   <div v-else-if="state === 'not tried' && study_full === false">
-    <h1>Set-up Survey</h1>
+    <h1 v-if="rescheduling">Rescheduling Your Appointments</h1>
+    <h1 v-else>Set-up Survey</h1>
 
-    <h2>Book pick-up/drop-off appointments</h2>
+    <h2>Book <span v-if="rescheduling">new </span>pick-up/drop-off appointments</h2>
 
     <p>Please book appointments to pick up and drop off your equipment. Drop-off options will appear after you have selected a pick-up time and drop-off appointments must be within five days of your pick-up appointment.</p>
 
@@ -33,34 +34,40 @@
       @error-catch="updateFormErrors"
     ></radio-button-question>
 
-    <h2>Demographics</h2>
+    <div v-if="!rescheduling">
+      <h2>Demographics</h2>
 
-    <p>Your answers to these questions will help us calibrate your activity monitor for improved accuracy.
-      You do <b>not</b> need to reply to any of these questions in order to participate in the study.</p>
+      <p>Your answers to these questions will help us calibrate your activity monitor for improved accuracy.
+        You do <b>not</b> need to reply to any of these questions in order to participate in the study.</p>
 
-    <textbox-question question-text="age:"
-      unit="years old"
-      v-model="form_answers.age"
-      :min="18"
-      text-type="number"
-      @error-catch="updateFormErrors"></textbox-question>
-    <textbox-multipart question-text="height:"
-      v-model="form_answers.height"
-      :text-types="['integer', 'number']"
-      :response-labels="['feet', 'inch(es)']"
-      :response-ranges="[[1, 9], [0, 11.99]]"
-      data-type="height"
-      @error-catch="updateFormErrors"></textbox-multipart>
-    <textbox-question question-text="weight:"
-      unit="lbs."
-      v-model="form_answers.weight"
-      :min="0"
-      text-type="number"
-      @error-catch="updateFormErrors"></textbox-question>
-    <textbox-question
-      question-text="gender:"
-      v-model="form_answers.gender"
-      @error-catch="updateFormErrors"></textbox-question>
+      <textbox-question question-text="age:"
+        unit="years old"
+        v-model="form_answers.age"
+        :min="18"
+        text-type="number"
+        @error-catch="updateFormErrors"></textbox-question>
+      <textbox-multipart question-text="height:"
+        v-model="form_answers.height"
+        :text-types="['integer', 'number']"
+        :response-labels="['feet', 'inch(es)']"
+        :response-ranges="[[1, 9], [0, 11.99]]"
+        data-type="height"
+        @error-catch="updateFormErrors"></textbox-multipart>
+      <textbox-question question-text="weight:"
+        unit="lbs."
+        v-model="form_answers.weight"
+        :min="0"
+        text-type="number"
+        @error-catch="updateFormErrors"></textbox-question>
+      <textbox-question
+        question-text="gender:"
+        v-model="form_answers.gender"
+        @error-catch="updateFormErrors"></textbox-question>
+    </div>
+
+    <p v-if="rescheduling">
+      Please note: any previous appointments will be cancelled.
+    </p>
 
     <button v-on:click="submitSurvey" v-if="perfectFormState === true">
       submit survey
@@ -124,7 +131,7 @@ import loadingView from './loading-view.vue'
 
 export default {
   name: 'booking',
-  props: ['pptId'],
+  props: ['pptId', 'rescheduling'],
   components: {
     radioButtonQuestion,
     textboxQuestion,
@@ -171,7 +178,8 @@ export default {
       let self = this;
 
       var appt_data = {
-        'participant_id': this.pptId
+        'participant_id': this.pptId,
+        'rescheduling': this.rescheduling
       }
       Object.keys(this.appointment_choices).forEach((appt_type) => {
         appt_data[appt_type] = this.available_timeslots[this.appointment_choices[appt_type]]

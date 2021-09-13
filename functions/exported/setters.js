@@ -36,6 +36,7 @@ let bookAppts = function(data) {
     let ppt_id_number = null
     let conflict_found = false
     let ppt_demographics = "NOT PROVIDED"
+    let rescheduling = data.rescheduling
 
     // get participant email
     return getters.getPptData(
@@ -55,7 +56,7 @@ let bookAppts = function(data) {
       }
 
       Object.entries(data).forEach(([appt_type, appt_data]) => {
-        if (appt_type !== 'participant_id') {
+        if (appt_type !== 'participant_id' && appt_type !== 'rescheduling') {
 
           // set up the checking calls
           check_calls.push(
@@ -129,14 +130,27 @@ let bookAppts = function(data) {
             });
           }
 
-          mail.send_as_template(
-            "New Sign-up: Participant " + ppt_id_number,
-            "new_signup",
-            {
-              fitbit_demo_info: ppt_demographics_string
-            },
-            constants.main_experimenter_email
-          )
+          if (rescheduling === false) {
+            mail.send_as_template(
+              "New Sign-up: Participant " + ppt_id_number,
+              "new_signup",
+              {
+                fitbit_demo_info: ppt_demographics_string
+              },
+              constants.main_experimenter_email
+            )
+          } else {
+            mail.send_as_template(
+              "Rescheduled: Participant " + ppt_id_number,
+              "reschedule",
+              {
+                ppt_id: ppt_id_number,
+                new_dropoff: date_utils.formatDate(date_utils.parseISOLocal(data.dropoff.startTime)).full,
+                new_pickup: date_utils.formatDate(date_utils.parseISOLocal(data.pickup.startTime)).full
+              },
+              constants.main_experimenter_email
+            )
+          }
 
           return 0
         })

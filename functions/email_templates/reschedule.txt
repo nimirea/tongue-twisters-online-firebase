@@ -1,0 +1,8 @@
+Participant {{{ ppt_id }}} has rescheduled their appointment.
+
+Here is their new info:
+
+- pickup: {{{ new_pickup }}}
+- dropoff: {{{ new_dropoff }}}
+
+Please delete any other events for this participant ASAP.

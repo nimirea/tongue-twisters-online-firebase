@@ -2,7 +2,7 @@
   <div id="app">
     <eligibility-survey v-if="ppt_state === 'eligibility-survey'"></eligibility-survey>
     <consent-form v-else-if="ppt_state === 'consent-form' || requested === 'consent_record'" :ppt-id="ppt_id" :record="requested === 'consent_record'" @finished="refreshState"></consent-form>
-    <booking v-else-if="ppt_state === 'appointment-booking'" :ppt-id="ppt_id"></booking>
+    <booking v-else-if="ppt_state === 'appointment-booking' || ppt_state === 'pickup'" :ppt-id="ppt_id" :rescheduling="ppt_state === 'pickup'"></booking>
     <loading-view v-else></loading-view>
   </div>
 </template>

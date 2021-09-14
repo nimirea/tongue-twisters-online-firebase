@@ -72,7 +72,7 @@ The calendars serve different roles in the booking process:
 
 This variable sets the length of each appointment timeslot, in minutes. If you have an upper bound _n_ on how many participants can be run in a given week—for example, due to limited equipment or limited funds—be careful not to open availability events that are longer than `EXP_APPT_MINS` * _n_.
 
-##### Study Location (`EXP_LOCATION_NAME`, `EXP_LOCATION_URL`)
+##### Study Location (`EXP_LOCATION_NAME`, `EXP_LOCATION_URL`, `EXP_PARKING_INSTRUCTIONS`)
 
 In order for participants to find the experimenter at appointments, it is important to give them instructions on where to go.
 
@@ -80,6 +80,7 @@ In order for participants to find the experimenter at appointments, it is import
   * Both appointments will take place ___
   * The experimenter will meet you ___
 * `EXP_LOCATION_URL`: a link to a map of the location. A Google maps link works well for this purpose.
+* `EXP_PARKING_INSTRUCTIONS`: A paragraph that will appear immediately after the location URL in reminder and confirmation emails. You may choose to include information about parking locations and reimbursement for transportation expenses here.
 
 ##### Timing of Reminder Emails (`EXP_DAILY_EMAIL_TIME`, `EXP_TIMEZONE`)
 

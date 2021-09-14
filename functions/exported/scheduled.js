@@ -120,7 +120,8 @@ let appointmentReminder = function(item) {
       time_formatted: appt_start_time,
       instructions: ppt_info.event_type === "dropoff" ? " Please bring your activity monitor (Fitbit) to the appointment." : "",
       loc: constants.location,
-      covid_screener_link: "https://" + constants.urls.exp + "/covid-screener?ppt=" + ppt_info.ppt_id
+      covid_screener_link: "https://" + constants.urls.exp + "/covid-screener?ppt=" + ppt_info.ppt_id,
+      parking_instructions: constants.parking_instructions
     },
     ppt_info.ppt_email
   );

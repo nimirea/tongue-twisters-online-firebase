@@ -6,4 +6,6 @@ IMPORTANT--Please complete this quick COVID pre-screening survey before arriving
 
 The experimenter will meet you {{ loc.name }}. Here is link to a map of this location: {{{ loc.maps_link }}}
 
+{{ parking_instructions }}
+
 We look forward to seeing you soon! If you have any questions, please respond to this email.

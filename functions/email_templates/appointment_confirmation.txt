@@ -6,4 +6,6 @@ Your equipment pick-up appointment is scheduled for {{{ pickup_formatted }}}, an
 
 Both appointments will take place {{ loc.name }}. Here is link to a map of this location: {{{ loc.maps_link }}}
 
-We look forward to meeting you at your pick-up appointment! If you have any questions, please feel free to respond to this email.
+{{ parking_instructions }}
+
+We look forward to meeting you at your pick-up appointment! If you have any questions, please respond to this email.

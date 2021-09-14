@@ -25,6 +25,7 @@ const location =  {
 const daily_email_time = parseInt(process.env.EXP_DAILY_EMAIL_TIME)
 const timezone = process.env.EXP_TIMEZONE
 const appt_length_mins = process.env.EXP_APPT_MINS
+const parking_instructions = process.env.EXP_PARKING_INSTRUCTIONS
 
 const email_templates_dir = './email_templates'
 
@@ -39,5 +40,6 @@ module.exports = {
   location,
   daily_email_time,
   timezone,
-  appt_length_mins
+  appt_length_mins,
+  parking_instructions
 };

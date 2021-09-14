@@ -110,7 +110,8 @@ let bookAppts = function(data) {
               dropoff_formatted: date_utils.formatDate(date_utils.parseISOLocal(data.dropoff.startTime)).full,
               pickup_formatted: date_utils.formatDate(date_utils.parseISOLocal(data.pickup.startTime)).full,
               appt_length_mins: constants.appt_length_mins,
-              loc: constants.location
+              loc: constants.location,
+              parking_instructions: constants.parking_instructions
             },
             ppt_email
           );

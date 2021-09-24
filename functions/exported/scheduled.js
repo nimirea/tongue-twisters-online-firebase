@@ -112,7 +112,7 @@ let appointmentReminder = function(item) {
   }
 
   return mail.send_as_template(
-    "[RESPONSE REQUESTED] " + appt_name + " Appointment Today",
+    "[RESPONSE REQUESTED] " + appt_name + " Appointment Tomorrow",
     "appointment_reminder",
     {
       appt_type: appt_name.toLowerCase(),
@@ -312,7 +312,8 @@ let runAllFunctions = function() {
             functionToRun = appointmentReminder,
             argsToFunction = item,
             anchorTime = date_utils.parseISOLocal(item.start.dateTime),
-            localRunTime = dailyRunTime
+            localRunTime = null,
+            offsetHours = -24
           )
 
           // emails before specific events

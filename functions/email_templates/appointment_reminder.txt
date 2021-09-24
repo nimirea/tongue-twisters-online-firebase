@@ -1,6 +1,6 @@
 Hi there,
 
-You have an equipment {{ appt_type }} appointment scheduled for {{{ time_formatted }}} today. The appointment will last no more than {{ appt_length_mins }} minutes.{{instructions}} If you need to reschedule this appointment, please let us know as soon as possible by responding to this email.
+You have an equipment {{ appt_type }} appointment scheduled for {{{ time_formatted }}} tomorrow. The appointment will last no more than {{ appt_length_mins }} minutes.{{instructions}} If you need to reschedule this appointment, please let us know as soon as possible by responding to this email.
 
 IMPORTANT--Please complete this quick COVID pre-screening survey before arriving at your appointment: {{{ covid_screener_link }}}
 

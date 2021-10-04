@@ -15,10 +15,11 @@ Here are steps for how to get your study online, under a Firebase project that y
 1. Create a Google Firebase account, if you don't have one already.
 2. Install the [Firebase CLI](https://firebase.google.com/docs/cli/) on your local machine
 3. Set up a Firebase project first. Make sure that you select the Blaze plan, which lets you use cloud functions. At the time of writing, it is quite cheap to host data on there—I do not expect to pay more than \$1 total to run about 100 participants in this experiment.
-4. Run `firebase init` in _this_ directory. Add the realtime database, hosting, storage, pubsub, and emulators as options. Link it to your just-created project.
-5. Run `npm install` inside this directory to update packages as needed.
+4. Create a new web app as part of your Firebase project, and copy the configuration info from this app to `src/fb_init.js.sample`. Remove '.sample' from the end of this file.
+5. Run `firebase init` in _this_ directory. Add the realtime database, hosting, storage, pubsub, and emulators as options. Link it to your just-created project.
+6. Run `npm install` inside this directory to update packages as needed.
 
-#### 2. Configuration Setup
+#### 2. Firebase Functions (Backend) Configuration Setup
 
 Before spinning up your dev server or pushing to Firebase, you'll also need to set your configuration variables in `functions/.env`. A sample configuration file `functions/.env.sample` is provided. `functions/.env` should contain:
 
@@ -137,7 +138,7 @@ While the experiment is online, participants will interact with the study like t
 
 1. Complete the screening survey on the homepage. This is the "entry point" into the entire study, and it is what should be advertised on your recruitment flyers.
 2. Eligible participants will receive an email with a link to the consent form. This same link will be used to book pickup/dropoff appointments for study equipment as well. If the study is full, participants will be added to a mailing list.
-3. The morning before each pickup appointment, participants will be asked to complete a COVID-19 screener via email.
+3. Before each pickup appointment, participants will be asked to complete a COVID-19 screener via email.
 4. At the pickup appointment, the experimenter will be able to confirm the pickup and send the Day 1 email to participants.
 5. On each day of the study, participants will receive an email prompting them to complete the day's session.
 
@@ -171,5 +172,5 @@ These experiments and the experimenter dashboard should work in the latest versi
 
 ## Credit
 
-* Many thanks to Chun Chan for help figuring out how to record audio using JavaScript, push it to the Firebase server, and display a volume meter during th esetup phase.
+* Many thanks to Chun Chan for help figuring out how to record audio using JavaScript, push it to the Firebase server, and display a volume meter during the setup phase.
 * Thanks to Matt Goldrick and the members of Soundlab for beta testing the experiment and providing helpful feedback on design!

@@ -75,6 +75,18 @@
         </button>
 
       </div>
+      <div v-else-if="views.current === 'stats'">
+
+        <div v-for="state in get_unique_ppt_attributes(ppt_info, 'state')" :key="state">
+          <h1>{{ state }}: {{ filter_ppt_info_by_status(ppt_info, state, include=true).length }}</h1>
+          <ul>
+            <li v-for="cond in calc_cond_assigments_count(filter_ppt_info_by_status(ppt_info, state, include=true))" :key="cond['official_name']">
+              {{ cond['official_name'] }}: {{ cond['count'] }}
+            </li>
+          </ul>
+        </div>
+
+      </div>
     </div>
     <div v-else>
       <textbox-question
@@ -110,8 +122,27 @@ export default {
       'provided_pw': "",
       'views': {
         'current': 'this week only',
-        'options': ['this week only', 'all participants', 'bulk operations']
+        'options': ['this week only', 'all participants', 'bulk operations', 'stats']
       },
+      'exp_cond_defs':
+        [
+          {
+            'official_name': 'language-similar',
+            'db_name': 'coda'
+          },
+          {
+            'official_name': 'language-dissimilar',
+            'db_name': ['onset-onset', 'onset-coda']
+          },
+          {
+            'official_name': 'training-similar',
+            'db_name': 'onset-onset'
+          },
+          {
+            'official_name': 'training-dissimilar',
+            'db_name': 'onset-coda'
+          }
+      ],
       'submitting': false,
       'loading_elements': [],
       'loading_ppt': null,
@@ -253,6 +284,42 @@ export default {
 
       }
 
+    },
+    get_unique_ppt_attributes: function(ppt_list = this.ppt_info, attribute) {
+      return Array.from(
+        new Set(ppt_list.map(ppt => ppt[attribute]))
+      )
+    },
+    calc_cond_assigments_count: function(ppt_list = this.ppt_info) {
+      let result_list = this.exp_cond_defs.map(exp_cond_def => {
+        let returned_obj = {'official_name': exp_cond_def['official_name']}
+
+        if (Array.isArray(exp_cond_def['db_name'])) {
+          returned_obj['count'] = exp_cond_def['db_name'].map(
+            db_name => { return ppt_list.filter(ppt => ppt['exp_cond'] == db_name).length }
+          ).reduce((a,b) => { return a + b })
+        } else {
+          returned_obj['count'] = ppt_list.filter(ppt => ppt['exp_cond'] == exp_cond_def['db_name']).length
+        }
+
+        // pull from exp_ver if we can
+        if (returned_obj['count'] == 0) {
+          if (returned_obj['official_name'].includes('language-')) {
+            if (returned_obj['official_name'].includes('-dissimilar')) {
+              returned_obj['count'] = ppt_list.filter(ppt => ppt['exp_ver'] == 4).length
+            } else {
+              returned_obj['count'] = ppt_list.filter(ppt => ppt['exp_ver'] == 2).length
+            }
+          } else {
+            returned_obj['count'] = 'not set yet'
+          }
+        }
+
+        return returned_obj
+
+      })
+
+      return result_list
     }
   },
   computed: {

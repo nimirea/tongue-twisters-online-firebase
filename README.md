@@ -16,7 +16,7 @@ Here are steps for how to get your study online, under a Firebase project that y
 2. Install the [Firebase CLI](https://firebase.google.com/docs/cli/) on your local machine
 3. Set up a Firebase project first. Make sure that you select the Blaze plan, which lets you use cloud functions. At the time of writing, it is quite cheap to host data on there—I do not expect to pay more than \$1 total to run about 100 participants in this experiment.
 4. Create a new web app as part of your Firebase project, and copy the configuration info from this app to `src/fb_init.js.sample`. Remove '.sample' from the end of this file.
-5. Run `firebase init` in _this_ directory. Add the realtime database, hosting, storage, pubsub, and emulators as options. Link it to your just-created project.
+5. Run `firebase init` in _this_ directory. Add the realtime database, hosting, storage, pubsub, and emulators as options. Link it to your just-created project. You'll want to set the hosting directory to `dist` instead of the default `public`.
 6. Run `npm install` inside this directory to update packages as needed.
 
 #### 2. Firebase Functions (Backend) Configuration Setup

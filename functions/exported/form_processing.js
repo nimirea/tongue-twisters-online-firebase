@@ -155,7 +155,7 @@ exports.submitData = function(surveyData) {
     } else if (surveyData.native_lang !== 'English') {
       // do they not have English as native language?
       is_eligible = false;
-    } else if (surveyData.native_lang === 'Yes') {
+    } else if (surveyData.disorder === 'Yes') {
       // do they have a history of disorder
       is_eligible = false;
     } else if (surveyData.age18orolder === 'No') {

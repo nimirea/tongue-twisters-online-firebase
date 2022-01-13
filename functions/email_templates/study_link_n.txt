@@ -3,3 +3,5 @@ Hi there,
 Thank you for completing Day {{ this_day }} of our study! Here is your link for tomorrow: {{{ tomorrow_link }}}
 
 Please begin the session at {{{ start_datetime_formatted }}} tomorrow.
+
+As a reminder, you can use Chrome, Firefox, or Microsoft Edge to access the experiment. Please do NOT use Safari or Internet Explorer.

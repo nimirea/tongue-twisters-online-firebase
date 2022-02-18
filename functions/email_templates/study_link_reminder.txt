@@ -2,4 +2,4 @@ Hi there,
 
 Your Day {{ current_day }} experiment session is now active! Please click this link NOW to begin: {{ current_link }}
 
-You will need to record audio again during this session, so we ask that you complete it in a quiet environment and use a laptop or desktop computer to access the study. You can use Chrome, Firefox, or Microsoft Edge to access the experiment.
+You will need to record audio again during this session, so we ask that you complete it in a quiet environment and use a laptop or desktop computer to access the study. You can use Chrome, Firefox, or Microsoft Edge to access the experiment. Please do NOT use Safari or Internet Explorer.

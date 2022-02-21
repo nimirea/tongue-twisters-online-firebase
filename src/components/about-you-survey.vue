@@ -150,7 +150,6 @@
         'Difficulties falling asleep',
         'Difficulties waking up',
         'Repeated awakenings with difficulties going back to sleep',
-        'Heavy snoring',
         {
           question: 'Heavy snoring',
           additional_answer: 'Do not know'
@@ -167,6 +166,7 @@
         'Not feeling refreshed when waking up',
         'Premature awakening',
         'Disturbed/restless sleep',
+        'Insufficient amount of sleep',
         'Feeling exhausted when waking up',
         'Sleepiness during work',
         'Sleepiness during leisure time',

@@ -170,6 +170,9 @@ exports.submitData = function(surveyData) {
     } else if (surveyData.microphones.length === 1 && surveyData.microphones[0] === 'Microphone on Bluetooth headphones') {
       // is their only microphone part of Bluetooth headphones?
       is_eligible = false;
+    } else if (surveyData.email === "" || surveyData.email === null || surveyData.email === undefined) {
+      // check for missing email
+      is_eligible = false;
     }
 
   }

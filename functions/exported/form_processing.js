@@ -206,7 +206,10 @@ exports.submitData = function(surveyData) {
 
         if (exp_ver_set === false) {
           // set experiment version randomly
-          to_upload.exp_ver = (Math.random() >= 0.66 ? 2 : 4);
+          // to_upload.exp_ver = (Math.random() >= 0.66 ? 2 : 4);
+
+          // set experiment version to 4 since that's what we're recruiting now
+          to_upload.exp_ver = 4
         } else {
           to_upload.exp_ver = ppt_data.exp_ver
         }

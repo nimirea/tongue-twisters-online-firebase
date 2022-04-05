@@ -5,7 +5,7 @@ function pick_random(array) {
 
 let options = {
   'cb_cond': ["AE->F; IH->S", "AE->S; IH->F"],
-  'exp_cond': ["onset-coda"]
+  'exp_cond': ["onset-coda", "onset-onset"]
 }
 
 function init_randomly(attribute_name) {

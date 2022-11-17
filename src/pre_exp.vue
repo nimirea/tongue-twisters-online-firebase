@@ -1,10 +1,12 @@
 <template>
   <div id="app">
-    <!-- <eligibility-survey v-if="ppt_state === 'eligibility-survey'"></eligibility-survey> -->
-    <div v-if="ppt_state === 'eligibility-survey'">
+    <!-- open study: -->
+    <eligibility-survey v-if="ppt_state === 'eligibility-survey'"></eligibility-survey>
+    <!-- close study: -->
+    <!-- <div v-if="ppt_state === 'eligibility-survey'">
       <h1>We are no longer recruiting participants for this experiment.</h1>
       <p>Thank you for your interest, but we have reached the required number of participants for this experiment. Please see the Northwestern Psychology Department's <a href="https://psychology.northwestern.edu/research/participate/paid-research-opportunities.html">list of paid research opportunities</a> for additional studies.</p>
-    </div>
+    </div> -->
     <consent-form v-else-if="ppt_state === 'consent-form' || requested === 'consent_record'" :ppt-id="ppt_id" :record="requested === 'consent_record'" @finished="refreshState"></consent-form>
     <booking v-else-if="ppt_state === 'appointment-booking' || ppt_state === 'pickup'" :ppt-id="ppt_id" :rescheduling="ppt_state === 'pickup'"></booking>
     <loading-view v-else></loading-view>
